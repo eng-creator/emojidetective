@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emoji Detective — Version 4 (Auto Save)</title>
+<style>
+:root{
+ --bg:#f4f6fb;--panel:#fff;--ink:#172033;--muted:#6d768b;--primary:#5b5ce2;
+ --primary2:#8b5cf6;--line:#e4e7f0;--good:#16834b;--bad:#c93a3a;--warn:#a06a00;
+ --shadow:0 16px 45px rgba(35,43,91,.10);--radius:22px
+}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#f7f7ff,#eef7ff);font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--ink)}
+header{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;padding:20px}
+.head{max-width:1180px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.logo{font-weight:900;font-size:25px}.tagline{font-size:13px;opacity:.88}.headscore{display:flex;gap:10px}
+.pill{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);padding:9px 13px;border-radius:13px;text-align:center;min-width:90px}.pill b{display:block;font-size:20px}.pill span{font-size:10px;opacity:.8}
+nav{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 4px 18px rgba(20,30,60,.06)}
+.navin{max-width:1180px;margin:auto;display:flex;gap:6px;overflow:auto;padding:8px 14px}
+.navbtn{white-space:nowrap;border:0;background:transparent;padding:10px 14px;border-radius:11px;font-weight:750;color:#5d667a;cursor:pointer}.navbtn:hover,.navbtn.active{background:#efefff;color:#4445b8}
+main{max-width:1180px;margin:28px auto;padding:0 17px}.view{display:none}.view.active{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:25px;margin-bottom:18px}
+.hero{padding:42px;text-align:center}.hero .heroemoji{font-size:70px}.hero h1{font-size:40px;margin:9px 0}.hero p{max-width:760px;margin:0 auto 24px;color:var(--muted);line-height:1.65}
+.btn{border:0;background:var(--primary);color:#fff;padding:12px 17px;border-radius:12px;font-weight:800;cursor:pointer}.btn:hover{filter:brightness(1.04);transform:translateY(-1px)}.btn.secondary{background:#ececff;color:#4546bb}.btn.light{background:#fff;border:1px solid #d6d8ec;color:var(--primary)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}.tile{border:1px solid var(--line);border-radius:17px;padding:18px;background:#fbfbff}.tile .ic{font-size:30px}.tile h3{margin:8px 0 5px}.tile p{margin:0;color:var(--muted);line-height:1.45}
+.kicker{text-transform:uppercase;letter-spacing:.09em;font-size:12px;font-weight:900;color:var(--primary)}h2{font-size:28px;margin:7px 0 12px}h3{font-size:20px}
+.message{background:#f7f7ff;border:1px dashed #ced1f4;border-radius:18px;padding:24px;text-align:center;font-size:30px;margin:17px 0}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}.choicegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:11px}.choice{border:2px solid var(--line);padding:15px;border-radius:14px;text-align:center;font-weight:750;background:white;cursor:pointer}.choice:hover{border-color:#b5b6ee;background:#fafaff}.choice.sel{border-color:var(--primary);background:#f0f0ff}.choice.ok{border-color:var(--good);background:#effaf4}.choice.no{border-color:var(--bad);background:#fff0f0}
+.feedback{min-height:25px;margin:15px 0;font-weight:800}.good{color:var(--good)}.bad{color:var(--bad)}.muted{color:var(--muted)}.small{font-size:13px;color:var(--muted)}
+.topline{display:flex;justify-content:space-between;align-items:start;gap:12px}.levelbar{height:9px;background:#eceef7;border-radius:20px;overflow:hidden;margin:13px 0 22px}.levelbar div{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary2));width:0}
+.actions{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:20px}
+.badge{display:inline-block;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:800;background:#f0efff;color:#4d4eb7}
+.compare .box{border:1px solid var(--line);border-radius:18px;padding:18px}.compare .box h4{text-align:center;color:var(--muted);margin:0}
+textarea,input,select{width:100%;border:1px solid #d6d9e5;border-radius:12px;padding:13px;font:inherit;background:#fff}textarea{min-height:110px;resize:vertical}
+.tablewrap{overflow:auto}.data-table{width:100%;border-collapse:collapse}.data-table th,.data-table td{padding:11px;border-bottom:1px solid var(--line);text-align:left}.data-table th{background:#f6f6ff}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px}.stat{border:1px solid var(--line);border-radius:16px;padding:16px}.stat b{font-size:25px;display:block}.stat span{font-size:12px;color:var(--muted)}
+.bar{height:13px;background:#eceef7;border-radius:15px;overflow:hidden}.bar div{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary2))}
+.list{margin:0;padding-left:19px;line-height:1.7}
+.note{background:#fff9e8;border:1px solid #f0dda5;color:#6f5815;padding:14px;border-radius:14px}
+.successbox{background:#effaf4;border:1px solid #bde8cc;padding:15px;border-radius:14px}
+.save-status{background:#f7f7ff;border:1px solid #d9dcf2;padding:12px 14px;border-radius:14px;margin-top:14px;font-size:13px;color:#596176}
+.save-status b{color:#4445b8}
+footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
+@media(max-width:760px){.row{grid-template-columns:1fr}.hero{padding:28px}.hero h1{font-size:31px}.head{align-items:flex-start}.headscore{gap:5px}.pill{min-width:76px}}
+
+.research-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 0}
+.rtab{border:1px solid #d8daea;background:#fff;padding:10px 13px;border-radius:12px;font-weight:800;color:#596176;cursor:pointer}
+.rtab.active{background:#efefff;color:#4445b8;border-color:#c9c8f1}
+.rpanel{display:none}.rpanel.active{display:block}
+.qmeta{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.mini-progress{height:8px;background:#eceef7;border-radius:20px;overflow:hidden;margin:12px 0 20px}
+.mini-progress div{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary2));width:0}
+.answered{opacity:.85}
+.diary-grid{display:grid;grid-template-columns:90px 1fr 130px;gap:8px;align-items:center}
+.diary-grid input{padding:10px}
+.stat .tiny{font-size:11px;color:var(--muted);display:block;margin-top:3px}
+@media(max-width:760px){.diary-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="head">
+ <div><div class="logo">🕵️ Emoji Detective <span style="opacity:.7">V3</span></div><div class="tagline">Understand the message. Detect the emotion. Think about the context.</div></div>
+ <div class="headscore"><div class="pill"><b id="score">0</b><span>POINTS</span></div><div class="pill"><b id="streak">0</b><span>STREAK</span></div></div>
+</div></header>
+
+<nav><div class="navin">
+ <button class="navbtn active" data-view="home">🏠 Home</button>
+ <button class="navbtn" data-view="learn">📚 Learn</button>
+ <button class="navbtn" data-view="investigate">🔍 Investigate</button>
+ <button class="navbtn" data-view="compare">🔄 Compare</button>
+ <button class="navbtn" data-view="detective">🕵️ Detective</button>
+ <button class="navbtn" data-view="create">✍️ Create</button>
+ <button class="navbtn" data-view="research">📊 Research Mode</button>
+ <button class="navbtn" data-view="guide">📖 Emoji Guide</button>
+ <button class="navbtn" data-view="results">🏆 Results</button>
+</div></nav>
+
+<main>
+<section id="home" class="view active">
+ <div class="card hero">
+   <div class="heroemoji">💬🔍😊</div>
+   <h1>Emoji Detective</h1>
+   <p><b>An interactive digital product for English learners.</b><br>
+   Explore how emojis can communicate emotions, reactions and social meaning in short English messages.</p>
+   <button class="btn" onclick="go('learn')">Start Learning</button>
+ </div>
+ <div class="grid">
+  <div class="tile"><div class="ic">🧩</div><h3>Learn</h3><p>Discover common emoji functions with simple English examples.</p></div>
+  <div class="tile"><div class="ic">🔍</div><h3>Investigate</h3><p>Answer message interpretation questions and collect points.</p></div>
+  <div class="tile"><div class="ic">🔄</div><h3>Compare</h3><p>See what changes when an emoji is added to the same words.</p></div>
+  <div class="tile"><div class="ic">🕵️</div><h3>Detective</h3><p>Use context to identify the most likely meaning.</p></div>
+  <div class="tile"><div class="ic">✍️</div><h3>Create</h3><p>Write your own short English message using an emoji.</p></div>
+  <div class="tile"><div class="ic">📊</div><h3>Research Mode</h3><p>25-question survey + 15-item interpretation test + 10 comparison experiments + 7-day diary.</p></div>
+ </div>
+ <div class="card note" style="margin-top:18px"><b>Project link:</b> This product supports the research project <i>“When Emojis Replace Words: Understanding English Messages”</i>. Final research statistics should be based on real participant responses, not invented data.</div>
+</section>
+
+<section id="learn" class="view">
+ <div class="card"><span class="kicker">Learning Lab</span><h2>How do emojis work?</h2>
+ <p class="muted">An emoji can add information that words do not show directly. It can signal emotion, reaction, agreement, farewell, celebration or another social meaning. The exact interpretation still depends on the message and context.</p></div>
+ <div class="grid">
+  <div class="tile"><div class="ic">😊</div><h3>Friendly tone</h3><p><b>Example:</b> “Thank you 😊”<br>The emoji can make the message feel warmer.</p></div>
+  <div class="tile"><div class="ic">👍</div><h3>Agreement</h3><p><b>Example:</b> “Okay 👍”<br>It can signal approval or agreement.</p></div>
+  <div class="tile"><div class="ic">👋</div><h3>Farewell</h3><p><b>Example:</b> “See you 👋”<br>It can work as a farewell signal.</p></div>
+  <div class="tile"><div class="ic">😮</div><h3>Surprise</h3><p><b>Example:</b> “Wow! 😮”<br>It helps show a surprised reaction.</p></div>
+  <div class="tile"><div class="ic">🎉</div><h3>Celebration</h3><p><b>Example:</b> “We won! 🎉”<br>It adds a celebration signal.</p></div>
+  <div class="tile"><div class="ic">😔</div><h3>Sadness / regret</h3><p><b>Example:</b> “I’m sorry 😔”<br>It can strengthen a negative emotional tone.</p></div>
+ </div>
+ <div class="card"><h3>Three questions to ask when you see an emoji</h3><ol class="list"><li>What does the emoji usually communicate?</li><li>What does it communicate in this exact message?</li><li>Would the message feel different without it?</li></ol></div>
+</section>
+
+<section id="investigate" class="view">
+ <div class="card">
+  <div class="topline"><div><span class="kicker">Investigation</span><h2 id="invTitle">Level 1 — Emoji Meaning</h2></div><div class="badge" id="invCounter">1 / 8</div></div>
+  <div class="levelbar"><div id="invProgress"></div></div>
+  <div id="invArea"></div>
+ </div>
+</section>
+
+<section id="compare" class="view">
+ <div class="card">
+  <span class="kicker">Compare Mode</span><h2>Same words, different signal</h2>
+  <p class="muted">Choose the version that gives the stronger signal described in the question.</p>
+  <div class="compare row">
+   <div class="box"><h4>Version A</h4><div class="message" id="cmpA">Thanks.</div></div>
+   <div class="box"><h4>Version B</h4><div class="message" id="cmpB">Thanks 😊</div></div>
+  </div>
+  <div id="cmpQ" style="font-weight:800;margin:18px 0"></div>
+  <div class="choicegrid" id="cmpOpts"></div>
+  <div class="feedback" id="cmpFeed"></div>
+  <div class="actions"><button class="btn secondary" id="cmpNext" disabled>Next comparison</button><span class="small" id="cmpCount">1 / 6</span></div>
+ </div>
+</section>
+
+<section id="detective" class="view">
+ <div class="card">
+  <span class="kicker">Context Detective</span><h2>Look at the whole message</h2>
+  <p class="muted">The same emoji can have different meanings depending on context.</p>
+  <div class="message" id="detMsg">“Okay 🙂”</div>
+  <div class="choicegrid" id="detOpts"></div>
+  <div class="feedback" id="detFeed"></div>
+  <div class="actions"><button class="btn secondary" id="detNext" disabled>Next case</button><span class="small" id="detCount">1 / 6</span></div>
+ </div>
+ <div class="card note"><b>Detective rule:</b> Never interpret an emoji alone. Read the words around it and think about the situation.</div>
+</section>
+
+<section id="create" class="view">
+ <div class="card"><span class="kicker">Creative Lab</span><h2>Create your own English message</h2>
+  <p class="muted">Write a short message of 3–10 words. Then choose the emoji you want to use.</p>
+  <textarea id="createText" placeholder="Example: See you tomorrow"></textarea>
+  <div style="margin-top:12px"><label class="small">Choose an emoji</label><select id="createEmoji"><option>😊</option><option>🙂</option><option>👍</option><option>👋</option><option>😮</option><option>😔</option><option>🎉</option><option>❤️</option><option>😎</option><option>😂</option></select></div>
+  <div class="message" id="previewMsg">Your message will appear here.</div>
+  <div class="actions"><button class="btn" onclick="analyseCreation()">Analyse My Message</button><button class="btn secondary" onclick="clearCreation()">Clear</button></div>
+  <div class="feedback" id="createFeed"></div>
+ </div>
+ <div class="card successbox"><b>What makes a good research example?</b><p style="margin:7px 0 0">A clear English message where the emoji adds a noticeable emotional or communicative signal. Avoid personal information.</p></div>
+</section>
+
+<section id="research" class="view">
+ <div class="card">
+  <span class="kicker">Research Mode • V3</span><h2>Emoji Communication Research Lab</h2>
+  <p class="muted">A multi-method classroom research tool for the project <i>“When Emojis Replace Words: Understanding English Messages”</i>. It separates opinion, interpretation and comparison tasks so the evidence can be analysed more clearly.</p>
+  <div class="note"><b>Research ethics:</b> use informed consent as required by your school; collect no names, private chats or sensitive personal information. Export anonymous response data and combine participant files later in a spreadsheet.</div>
+  <div class="research-tabs">
+   <button class="rtab active" data-rpanel="rSurvey">📋 Questionnaire</button>
+   <button class="rtab" data-rpanel="rInterpret">🔍 Interpretation Test</button>
+   <button class="rtab" data-rpanel="rExperiment">🔄 Replacement Experiment</button>
+   <button class="rtab" data-rpanel="rDiary">📅 7-Day Diary</button>
+   <button class="rtab" data-rpanel="rSummary">📊 Summary</button>
+  </div>
+ </div>
+
+ <div id="rSurvey" class="rpanel active">
+  <div class="card">
+   <div class="qmeta"><div><span class="badge">Questionnaire</span><h3 id="rSurveyMsg">“Thanks 😊”</h3></div><span class="small" id="rSurveyCount">1 / 25</span></div>
+   <div class="mini-progress"><div id="rSurveyProgress"></div></div>
+   <p id="rSurveyQuestion" style="font-weight:800"></p>
+   <div class="choicegrid" id="rSurveyOpts"></div>
+   <div class="feedback" id="rSurveyFeed"></div>
+   <div class="actions"><button class="btn secondary" id="rSurveyNext" disabled>Record & Next</button></div>
+  </div>
+ </div>
+
+ <div id="rInterpret" class="rpanel">
+  <div class="card">
+   <div class="qmeta"><div><span class="badge">Message Interpretation Test</span><h3 id="rIntMsg">“Okay 🙂”</h3></div><span class="small" id="rIntCount">1 / 15</span></div>
+   <div class="mini-progress"><div id="rIntProgress"></div></div>
+   <p id="rIntQuestion" style="font-weight:800"></p>
+   <div class="choicegrid" id="rIntOpts"></div>
+   <div class="feedback" id="rIntFeed"></div>
+   <div class="actions"><button class="btn secondary" id="rIntNext" disabled>Record & Next</button></div>
+  </div>
+ </div>
+
+ <div id="rExperiment" class="rpanel">
+  <div class="card">
+   <div class="qmeta"><div><span class="badge">Emoji Replacement Experiment</span><h3 id="rExpTitle">Comparison 1</h3></div><span class="small" id="rExpCount">1 / 10</span></div>
+   <div class="mini-progress"><div id="rExpProgress"></div></div>
+   <div class="compare row">
+    <div class="box"><h4>Version A — words only</h4><div class="message" id="rExpA">Thanks.</div></div>
+    <div class="box"><h4>Version B — words + emoji</h4><div class="message" id="rExpB">Thanks 😊</div></div>
+   </div>
+   <p id="rExpQuestion" style="font-weight:800;margin-top:18px"></p>
+   <div class="choicegrid" id="rExpOpts"></div>
+   <div class="feedback" id="rExpFeed"></div>
+   <div class="actions"><button class="btn secondary" id="rExpNext" disabled>Record & Next</button></div>
+  </div>
+ </div>
+
+ <div id="rDiary" class="rpanel">
+  <div class="card">
+   <span class="badge">Seven-Day Emoji Diary</span><h3>Record anonymous, non-private examples</h3>
+   <p class="muted">Use an example you create yourself or a generic example provided in class. Do not copy or submit real private conversations.</p>
+   <div class="diary-grid" style="font-weight:800;margin-bottom:8px"><div>Day</div><div>English message</div><div>Emoji / function</div></div>
+   <div id="diaryRows"></div>
+   <div class="actions"><button class="btn" onclick="saveDiary()">Save Diary</button><button class="btn secondary" onclick="clearDiary()">Clear</button></div>
+   <div class="feedback" id="diaryFeed"></div>
+  </div>
+ </div>
+
+ <div id="rSummary" class="rpanel">
+  <div class="card">
+   <span class="badge">Anonymous Session Summary</span><h3>Research progress</h3>
+   <div class="statgrid">
+    <div class="stat"><b id="sumSurvey">0 / 25</b><span>questionnaire responses</span></div>
+    <div class="stat"><b id="sumInt">0 / 15</b><span>interpretation responses</span></div>
+    <div class="stat"><b id="sumExp">0 / 10</b><span>experiment responses</span></div>
+    <div class="stat"><b id="sumDiary">0 / 7</b><span>diary days completed</span></div>
+   </div>
+  </div>
+  <div class="card">
+   <h3>Questionnaire distribution</h3>
+   <div class="statgrid">
+    <div class="stat"><b id="sumYes">0</b><span>Yes</span></div>
+    <div class="stat"><b id="sumNo">0</b><span>No</span></div>
+    <div class="stat"><b id="sumUnsure">0</b><span>Not sure</span></div>
+    <div class="stat"><b id="sumIntCorrect">0</b><span>Interpretation correct</span></div>
+   </div>
+   <div style="margin-top:18px"><div class="small">Questionnaire “Yes” share</div><div class="bar"><div id="sumYesBar" style="width:0"></div></div><div class="small" id="sumYesPct">0%</div></div>
+   <div style="margin-top:18px"><div class="small">Experiment: Version B selected</div><div class="bar"><div id="sumExpBar" style="width:0"></div></div><div class="small" id="sumExpPct">0%</div></div>
+  </div>
+  <div class="card note"><b>Important:</b> these figures describe the current anonymous browser session only. They are not final scientific findings until real participant data have been collected, checked and aggregated.</div>
+  <div class="save-status"><b>💾 Auto-save is ON.</b> Your current answers are saved in this browser automatically. <span id="saveStatus">Not saved yet.</span><br><span class="small">Anonymous session: <b id="sessionIdLabel">—</b></span></div><div class="actions"><button class="btn light" onclick="startNewParticipant()">✅ Save current & start new participant</button><button class="btn secondary" onclick="exportAllResearch()">📥 Export all results (CSV)</button></div>
+ </div>
+</section>
+
+<section id="guide" class="view">
+ <div class="card"><span class="kicker">Reference Guide</span><h2>Emoji Meaning Guide for English Learners</h2>
+ <p class="muted">Learning examples for the prototype. In the final research project, this guide can be updated using the student’s own collected examples and findings.</p>
+ <div class="tablewrap"><table class="data-table"><thead><tr><th>Emoji</th><th>Possible function</th><th>Example</th><th>Context reminder</th></tr></thead>
+ <tbody>
+ <tr><td>😊</td><td>friendly / happy tone</td><td>Thank you 😊</td><td>Often makes the message warmer.</td></tr>
+ <tr><td>🙂</td><td>mild positive tone</td><td>Okay 🙂</td><td>Readers may interpret it differently in context.</td></tr>
+ <tr><td>👍</td><td>agreement / approval</td><td>Okay 👍</td><td>Can act as a short approval signal.</td></tr>
+ <tr><td>👋</td><td>greeting / farewell</td><td>See you 👋</td><td>Can support a farewell meaning.</td></tr>
+ <tr><td>😮</td><td>surprise</td><td>Wow! 😮</td><td>Shows a visible reaction.</td></tr>
+ <tr><td>😔</td><td>sadness / regret</td><td>I’m sorry 😔</td><td>Words and context still matter.</td></tr>
+ <tr><td>🎉</td><td>celebration</td><td>We won! 🎉</td><td>Often linked to a positive event.</td></tr>
+ <tr><td>❤️</td><td>affection / strong positive feeling</td><td>Thank you ❤️</td><td>Interpretation depends on the relationship and context.</td></tr>
+ </tbody></table></div></div>
+</section>
+
+<section id="results" class="view">
+ <div class="card hero">
+  <div class="heroemoji">🏆</div><h1>Your Detective Report</h1>
+  <p>The score below reflects performance in this interactive prototype. It is not a general measure of English ability.</p>
+  <div class="statgrid"><div class="stat"><b id="resScore">0</b><span>points</span></div><div class="stat"><b id="resCorrect">0</b><span>correct answers</span></div><div class="stat"><b id="resBadge">Starter</b><span>detective level</span></div><div class="stat"><b id="resResearch">0</b><span>research responses</span></div></div>
+ </div>
+ <div class="card"><h3>What you practised</h3><ul class="list"><li>Identifying common emoji functions in English messages.</li><li>Comparing messages with and without emojis.</li><li>Using context to interpret emotional and social meaning.</li><li>Creating short English messages that use emoji meaningfully.</li></ul></div>
+ <div class="card note"><b>For the scientific project:</b> the research findings shown in the project report should come from the real anonymous participant dataset. The product itself can display the final verified statistics after the study is completed.</div>
+ <div class="actions"><button class="btn" onclick="go('investigate')">Investigate Again</button><button class="btn secondary" onclick="go('research')">Open Research Mode</button></div>
+</section>
+</main>
+
+<footer>Emoji Detective V3 • Digital research product prototype for “When Emojis Replace Words: Understanding English Messages”</footer>
+
+<script>
+const CURRENT_KEY='emoji_detective_current_session_v4';
+const HISTORY_KEY='emoji_detective_completed_sessions_v4';
+
+const state={score:0,correct:0,streak:0};
+
+function freshResearch(){
+  return {
+    survey:{i:0,answers:[],stats:{Yes:0,No:0,'Not sure':0}},
+    interpret:{i:0,answers:[],correct:0},
+    experiment:{i:0,answers:[],versionB:0},
+    diary:[]
+  };
+}
+
+let research=freshResearch();
+let sessionId='P-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+let sessionStartedAt=new Date().toISOString();
+let lastSavedAt=null;
+
+function hasSessionData(){
+  return state.score>0 || state.correct>0 ||
+    research.survey.answers.length ||
+    research.interpret.answers.length ||
+    research.experiment.answers.length ||
+    research.diary.length;
+}
+
+function saveLocalSession(){
+  const payload={
+    sessionId,
+    startedAt:sessionStartedAt,
+    savedAt:new Date().toISOString(),
+    state:{score:state.score,correct:state.correct,streak:state.streak},
+    research
+  };
+  localStorage.setItem(CURRENT_KEY,JSON.stringify(payload));
+  lastSavedAt=payload.savedAt;
+  updateSaveStatus();
+}
+
+function loadLocalSession(){
+  try{
+    const raw=localStorage.getItem(CURRENT_KEY);
+    if(!raw) return;
+    const saved=JSON.parse(raw);
+    if(saved?.state){
+      state.score=Number(saved.state.score)||0;
+      state.correct=Number(saved.state.correct)||0;
+      state.streak=Number(saved.state.streak)||0;
+    }
+    if(saved?.research) research=saved.research;
+    if(saved?.sessionId) sessionId=saved.sessionId;
+    if(saved?.startedAt) sessionStartedAt=saved.startedAt;
+    lastSavedAt=saved.savedAt||null;
+  }catch(err){
+    console.warn('Could not restore saved session:',err);
+  }
+}
+
+function updateSaveStatus(){
+  const el=document.getElementById('saveStatus');
+  const sid=document.getElementById('sessionIdLabel');
+  if(sid) sid.textContent=sessionId;
+  if(el){
+    el.textContent=lastSavedAt
+      ? 'Last saved: '+new Date(lastSavedAt).toLocaleString()
+      : 'Not saved yet.';
+  }
+}
+
+function getHistory(){
+  try{
+    return JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');
+  }catch(err){
+    return [];
+  }
+}
+
+function archiveCurrentSession(){
+  if(!hasSessionData()) return;
+  const history=getHistory();
+  const payload={
+    sessionId,
+    startedAt:sessionStartedAt,
+    finishedAt:new Date().toISOString(),
+    state:{score:state.score,correct:state.correct,streak:state.streak},
+    research:JSON.parse(JSON.stringify(research))
+  };
+  history.push(payload);
+  localStorage.setItem(HISTORY_KEY,JSON.stringify(history));
+}
+
+function startNewParticipant(){
+  archiveCurrentSession();
+  state.score=0; state.correct=0; state.streak=0;
+  research=freshResearch();
+  sessionId='P-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+  sessionStartedAt=new Date().toISOString();
+  lastSavedAt=null;
+  localStorage.removeItem(CURRENT_KEY);
+  renderSurvey(); renderInterpret(); renderExperiment(); buildDiary(); updateResearchSummary(); updateHeader(); updateSaveStatus();
+  go('research');
+  const f=document.getElementById('diaryFeed');
+  if(f){f.className='feedback good';f.textContent='Previous participant was saved. A new anonymous session has started.';}
+}
+
+function exportCurrentAndHistory(){
+  const history=getHistory();
+  const current=hasSessionData()?{
+    sessionId,startedAt:sessionStartedAt,finishedAt:null,
+    state:{score:state.score,correct:state.correct,streak:state.streak},
+    research:JSON.parse(JSON.stringify(research))
+  }:null;
+  return current?[...history,current]:history;
+}
+
+function updateHeader(){document.getElementById('score').textContent=state.score;document.getElementById('streak').textContent=state.streak;updateResults()}
+function addScore(n,ok){if(ok){state.score+=n;state.correct++;state.streak++}else state.streak=0;saveLocalSession();updateHeader()}
+function go(id){
+ document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===id));
+ if(id==='investigate' && !invStarted){startInvestigation()}
+ if(id==='compare' && !cmpStarted){startCompare()}
+ if(id==='detective' && !detStarted){startDetective()}
+ updateResults();window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>go(b.dataset.view));
+
+const invData=[
+ {title:'Level 1 — Emoji Meaning',msg:'“Thank you 😊”',q:'What does 😊 most likely add?',o:['friendly / happy tone','anger','farewell','a question'],a:0,e:'😊 often adds a friendly or happy tone.'},
+ {title:'Level 1 — Emoji Meaning',msg:'“See you 👋”',q:'What does 👋 most likely signal?',o:['farewell','sadness','agreement','surprise'],a:0,e:'👋 can work as a farewell signal.'},
+ {title:'Level 2 — Word or Emoji?',msg:'“Okay 👍”',q:'Can 👍 communicate “I agree” in this short chat?',o:['Yes, often','No, never','Only in a formal report','It means goodbye'],a:0,e:'In informal short messages, 👍 can communicate agreement.'},
+ {title:'Level 2 — Word or Emoji?',msg:'“Thanks 😊”',q:'Does 😊 literally mean “thanks”?',o:['No — it mainly adds tone','Yes — always','It means goodbye','It replaces the entire sentence'],a:0,e:'The words carry the basic meaning; 😊 adds emotional tone.'},
+ {title:'Level 3 — Function',msg:'“We won! 🎉”',q:'What does 🎉 contribute?',o:['celebration','anger','farewell','confusion'],a:0,e:'🎉 is strongly associated with celebration.'},
+ {title:'Level 3 — Function',msg:'“Wow! 😮”',q:'What reaction is signalled?',o:['surprise','gratitude','agreement','sadness'],a:0,e:'😮 commonly signals surprise.'},
+ {title:'Level 4 — Context',msg:'“I’m sorry 😔”',q:'In this context, 😔 most likely supports…',o:['sadness / regret','celebration','approval','greeting'],a:0,e:'The words and emoji together suggest sadness or regret.'},
+ {title:'Level 4 — Context',msg:'“Great idea 👍”',q:'Here, 👍 most likely means…',o:['approval','farewell','sadness','surprise'],a:0,e:'The context makes approval the most likely interpretation.'}
+];
+let invI=0,invStarted=false,invAnswered=false;
+function startInvestigation(){invStarted=true;invI=0;renderInv()}
+function renderInv(){
+ const d=invData[invI];invAnswered=false;
+ document.getElementById('invTitle').textContent=d.title;document.getElementById('invCounter').textContent=(invI+1)+' / '+invData.length;
+ document.getElementById('invProgress').style.width=((invI)/invData.length*100)+'%';
+ document.getElementById('invArea').innerHTML=`<div class="message">${d.msg}</div><div style="font-weight:800;margin-bottom:12px">${d.q}</div><div class="choicegrid" id="invOpts"></div><div class="feedback" id="invFeed"></div><div class="actions"><button class="btn secondary" id="invNext" disabled>${invI===invData.length-1?'Finish Investigation':'Next'}</button></div>`;
+ const box=document.getElementById('invOpts');
+ d.o.forEach((x,i)=>{const el=document.createElement('div');el.className='choice';el.textContent=x;el.onclick=()=>{if(invAnswered)return;invAnswered=true;[...box.children].forEach((c,j)=>{if(j===d.a)c.classList.add('ok');if(j===i&&i!==d.a)c.classList.add('no')});const ok=i===d.a;document.getElementById('invFeed').className='feedback '+(ok?'good':'bad');document.getElementById('invFeed').textContent=(ok?'Correct! ':'Not quite. ')+d.e;addScore(10,ok);document.getElementById('invNext').disabled=false};box.appendChild(el)});
+ document.getElementById('invNext').onclick=()=>{if(invI<invData.length-1){invI++;renderInv()}else{go('results')}};
+}
+
+const cmpData=[
+ ['Thanks.','Thanks 😊','Which version feels warmer?',['Version B','Version A','No difference'],0,'😊 can add a friendlier tone.'],
+ ['Okay.','Okay 👍','Which version gives a clearer approval signal?',['Version B','Version A','No difference'],0,'👍 can make agreement more explicit.'],
+ ['See you.','See you 👋','Which version gives a clearer farewell signal?',['Version B','Version A','No difference'],0,'👋 works as a farewell signal.'],
+ ['Wow!','Wow! 😮','Which version shows surprise more visibly?',['Version B','Version A','No difference'],0,'😮 makes the reaction more explicit.'],
+ ['I’m sorry.','I’m sorry 😔','Which version gives a stronger sadness/regret signal?',['Version B','Version A','No difference'],0,'😔 can strengthen the emotional signal.'],
+ ['We won!','We won! 🎉','Which version gives a clearer celebration signal?',['Version B','Version A','No difference'],0,'🎉 adds a celebration signal.']
+];
+let cmpI=0,cmpStarted=false,cmpAnswered=false;
+function startCompare(){cmpStarted=true;cmpI=0;renderCmp()}
+function renderCmp(){cmpAnswered=false;const d=cmpData[cmpI];document.getElementById('cmpA').textContent=d[0];document.getElementById('cmpB').textContent=d[1];document.getElementById('cmpQ').textContent=d[2];document.getElementById('cmpCount').textContent=`${cmpI+1} / ${cmpData.length}`;document.getElementById('cmpFeed').textContent='';document.getElementById('cmpNext').disabled=true;const box=document.getElementById('cmpOpts');box.innerHTML='';d[3].forEach((x,i)=>{let e=document.createElement('div');e.className='choice';e.textContent=x;e.onclick=()=>{if(cmpAnswered)return;cmpAnswered=true;[...box.children].forEach((c,j)=>{if(j===d[4])c.classList.add('ok');if(j===i&&i!==d[4])c.classList.add('no')});const ok=i===d[4];document.getElementById('cmpFeed').className='feedback '+(ok?'good':'bad');document.getElementById('cmpFeed').textContent=(ok?'Correct! ':'Not quite. ')+d[5];addScore(8,ok);document.getElementById('cmpNext').disabled=false};box.appendChild(e)});document.getElementById('cmpNext').onclick=()=>{if(cmpI<cmpData.length-1){cmpI++;renderCmp()}else{go('results')}}}
+
+const detData=[
+ ['“Okay 👍”',['agreement / approval','sadness','farewell','surprise'],0,'The words “Okay” plus 👍 strongly suggest approval.'],
+ ['“See you 👋”',['farewell','anger','celebration','sadness'],0,'👋 supports the farewell context.'],
+ ['“Wow! 😮”',['surprise','gratitude','agreement','sadness'],0,'“Wow!” creates a clear surprise context.'],
+ ['“Thank you 😊”',['friendly / happy tone','anger','farewell','confusion'],0,'😊 usually makes the thanks feel warmer.'],
+ ['“I’m sorry 😔”',['sadness / regret','celebration','approval','greeting'],0,'The words and 😔 work together to show regret or sadness.'],
+ ['“We won! 🎉”',['celebration','farewell','apology','disagreement'],0,'Winning plus 🎉 creates a celebration context.']
+];
+let detI=0,detStarted=false,detAnswered=false;
+function startDetective(){detStarted=true;detI=0;renderDet()}
+function renderDet(){detAnswered=false;const d=detData[detI];document.getElementById('detMsg').textContent=d[0];document.getElementById('detCount').textContent=`${detI+1} / ${detData.length}`;document.getElementById('detFeed').textContent='';document.getElementById('detNext').disabled=true;const box=document.getElementById('detOpts');box.innerHTML='';d[1].forEach((x,i)=>{let e=document.createElement('div');e.className='choice';e.textContent=x;e.onclick=()=>{if(detAnswered)return;detAnswered=true;[...box.children].forEach((c,j)=>{if(j===d[2])c.classList.add('ok');if(j===i&&i!==d[2])c.classList.add('no')});const ok=i===d[2];document.getElementById('detFeed').className='feedback '+(ok?'good':'bad');document.getElementById('detFeed').textContent=(ok?'Correct! ':'Not quite. ')+d[3];addScore(10,ok);document.getElementById('detNext').disabled=false};box.appendChild(e)});document.getElementById('detNext').onclick=()=>{if(detI<detData.length-1){detI++;renderDet()}else{go('results')}}}
+
+// ===== RESEARCH MODE V3 =====
+const surveyData = [
+ ['A1','“Thanks 😊”','Does adding 😊 make the message feel warmer?',['Yes','No','Not sure']],
+ ['A2','“Okay 👍”','Can 👍 communicate agreement in a short chat?',['Yes','No','Not sure']],
+ ['A3','“See you 👋”','Can 👋 work as a farewell signal?',['Yes','No','Not sure']],
+ ['A4','“Wow! 😮”','Does 😮 make the surprise reaction more visible?',['Yes','No','Not sure']],
+ ['A5','“We won! 🎉”','Does 🎉 reinforce the celebration meaning?',['Yes','No','Not sure']],
+ ['B1','“I’m sorry 😔”','Does 😔 add an emotional signal of sadness or regret?',['Yes','No','Not sure']],
+ ['B2','“Great idea 👍”','Does 👍 help communicate approval?',['Yes','No','Not sure']],
+ ['B3','“Thank you ❤️”','Could ❤️ have a different meaning in different relationships?',['Yes','No','Not sure']],
+ ['B4','“Okay 🙂”','Could different readers interpret 🙂 differently?',['Yes','No','Not sure']],
+ ['B5','“Good luck 🍀”','Can the emoji add a supportive meaning to the words?',['Yes','No','Not sure']],
+ ['B6','“I’m ready 💪”','Can 💪 strengthen a message of determination?',['Yes','No','Not sure']],
+ ['B7','“Really? 😳”','Can 😳 show a strong emotional reaction?',['Yes','No','Not sure']],
+ ['C1','“Thank you.” / “Thank you 😊”','Does the second version communicate a different tone?',['Yes','No','Not sure']],
+ ['C2','“See you.” / “See you 👋”','Does adding an emoji change the communicative signal?',['Yes','No','Not sure']],
+ ['C3','“Okay.” / “Okay 👍”','Does adding 👍 make approval clearer?',['Yes','No','Not sure']],
+ ['C4','“Great!” / “Great! 🎉”','Does adding 🎉 strengthen celebration?',['Yes','No','Not sure']],
+ ['C5','“Wow!” / “Wow! 😮”','Does adding 😮 make the reaction more visible?',['Yes','No','Not sure']],
+ ['C6','“Sorry.” / “Sorry 😔”','Does adding 😔 strengthen the emotional tone?',['Yes','No','Not sure']],
+ ['C7','“Nice!” / “Nice! 👍”','Can 👍 add an approval signal?',['Yes','No','Not sure']],
+ ['D1','“Sure 🙂”','Could 🙂 make the tone sound milder?',['Yes','No','Not sure']],
+ ['D2','“No problem 😊”','Can 😊 make the phrase sound friendlier?',['Yes','No','Not sure']],
+ ['D3','“Let’s go! 🚀”','Can 🚀 signal energy or excitement?',['Yes','No','Not sure']],
+ ['D4','“Oops! 😅”','Can 😅 communicate an embarrassed or light reaction?',['Yes','No','Not sure']],
+ ['D5','“Good night 🌙”','Can 🌙 support the meaning of the message?',['Yes','No','Not sure']]
+];
+
+const interpretationData = [
+ ['I1','“Okay 🙂”','What does the message most likely communicate?',['mild / calm tone','celebration','farewell','anger'],0],
+ ['I2','“Great idea 👍”','What does 👍 most likely communicate here?',['approval','sadness','surprise','farewell'],0],
+ ['I3','“See you 👋”','What is the clearest social function?',['farewell','apology','agreement','celebration'],0],
+ ['I4','“Wow! 😮”','What reaction is most likely signalled?',['surprise','gratitude','sadness','agreement'],0],
+ ['I5','“We won! 🎉”','What does 🎉 contribute?',['celebration','anger','confusion','farewell'],0],
+ ['I6','“I’m sorry 😔”','What emotional meaning is supported?',['sadness / regret','approval','celebration','greeting'],0],
+ ['I7','“Thank you 😊”','How does 😊 most likely affect the tone?',['warmer / friendlier','more formal','angrier','unclear farewell'],0],
+ ['I8','“Good luck 🍀”','What extra meaning can 🍀 suggest?',['luck / encouragement','anger','farewell','surprise'],0],
+ ['I9','“I’m ready 💪”','What does 💪 most likely add?',['determination / confidence','sadness','greeting','apology'],0],
+ ['I10','“Really? 😳”','What reaction is most likely?',['strong surprise / embarrassment','celebration','farewell','agreement'],0],
+ ['I11','“No problem 😊”','What tone is most likely?',['friendly / reassuring','angry','sad','formal warning'],0],
+ ['I12','“Oops! 😅”','What does 😅 most likely communicate?',['embarrassed / light reaction','celebration','agreement','farewell'],0],
+ ['I13','“Let’s go! 🚀”','What feeling does 🚀 most likely add?',['energy / excitement','sadness','regret','apology'],0],
+ ['I14','“Good night 🌙”','What is the emoji mainly doing?',['supporting the message context','replacing the whole sentence','showing anger','showing surprise'],0],
+ ['I15','“Thank you ❤️”','Why might context matter here?',['The relationship can affect interpretation','❤️ always means goodbye','It has one fixed meaning','The words become meaningless'],0]
+];
+
+const experimentData = [
+ ['E1','Thanks.','Thanks 😊','Which version feels warmer?',['Version B','Version A','No difference'],0],
+ ['E2','Okay.','Okay 👍','Which version gives the clearer approval signal?',['Version B','Version A','No difference'],0],
+ ['E3','See you.','See you 👋','Which version gives the clearer farewell signal?',['Version B','Version A','No difference'],0],
+ ['E4','Wow!','Wow! 😮','Which version shows surprise more visibly?',['Version B','Version A','No difference'],0],
+ ['E5','I’m sorry.','I’m sorry 😔','Which version gives a stronger sadness/regret signal?',['Version B','Version A','No difference'],0],
+ ['E6','We won!','We won! 🎉','Which version gives the clearer celebration signal?',['Version B','Version A','No difference'],0],
+ ['E7','Great idea.','Great idea 👍','Which version makes approval more explicit?',['Version B','Version A','No difference'],0],
+ ['E8','Good luck.','Good luck 🍀','Which version adds a supportive signal?',['Version B','Version A','No difference'],0],
+ ['E9','I’m ready.','I’m ready 💪','Which version gives a stronger determination signal?',['Version B','Version A','No difference'],0],
+ ['E10','Oops!','Oops! 😅','Which version gives the stronger emotional reaction signal?',['Version B','Version A','No difference'],0]
+];
+
+function wireResearchTabs(){
+ document.querySelectorAll('.rtab').forEach(btn=>{
+  btn.onclick=()=>{
+   document.querySelectorAll('.rtab').forEach(b=>b.classList.remove('active'));
+   document.querySelectorAll('.rpanel').forEach(p=>p.classList.remove('active'));
+   btn.classList.add('active');
+   document.getElementById(btn.dataset.rpanel).classList.add('active');
+   if(btn.dataset.rpanel==='rSummary') updateResearchSummary();
+  };
+ });
+}
+wireResearchTabs();
+
+function renderSurvey(){
+ const d=surveyData[research.survey.i], p=research.survey.i/surveyData.length*100;
+ document.getElementById('rSurveyMsg').textContent=d[1];
+ document.getElementById('rSurveyQuestion').textContent=d[2];
+ document.getElementById('rSurveyCount').textContent=`${research.survey.i+1} / ${surveyData.length}`;
+ document.getElementById('rSurveyProgress').style.width=p+'%';
+ const feed=document.getElementById('rSurveyFeed'); feed.textContent='';
+ const next=document.getElementById('rSurveyNext'); next.disabled=true;
+ const box=document.getElementById('rSurveyOpts'); box.innerHTML='';
+ d[3].forEach(x=>{
+  const e=document.createElement('div'); e.className='choice'; e.textContent=x;
+  e.onclick=()=>{box.querySelectorAll('.choice').forEach(c=>c.classList.remove('sel'));e.classList.add('sel');feed.className='feedback good';feed.textContent='Response selected. Click “Record & Next” to save it.';next.disabled=false};
+  box.appendChild(e);
+ });
+ next.onclick=recordSurvey;
+}
+function recordSurvey(){
+ const picked=document.querySelector('#rSurveyOpts .choice.sel'); if(!picked) return;
+ const d=surveyData[research.survey.i], chosen=picked.textContent;
+ research.survey.answers.push({id:d[0],response:chosen});
+ research.survey.stats[chosen]++;
+ if(research.survey.i<surveyData.length-1){research.survey.i++;renderSurvey()}else{
+  document.getElementById('rSurveyFeed').className='feedback good';
+  document.getElementById('rSurveyFeed').textContent='Questionnaire complete. Open Summary to review this session.';
+  document.getElementById('rSurveyNext').disabled=true;
+ }
+ updateResearchSummary();
+ saveLocalSession();
+}
+
+function renderInterpret(){
+ const d=interpretationData[research.interpret.i],p=research.interpret.i/interpretationData.length*100;
+ document.getElementById('rIntMsg').textContent=d[1];
+ document.getElementById('rIntQuestion').textContent=d[2];
+ document.getElementById('rIntCount').textContent=`${research.interpret.i+1} / ${interpretationData.length}`;
+ document.getElementById('rIntProgress').style.width=p+'%';
+ document.getElementById('rIntFeed').textContent='';
+ const next=document.getElementById('rIntNext'); next.disabled=true;
+ const box=document.getElementById('rIntOpts'); box.innerHTML='';
+ d[3].forEach((x,i)=>{
+  const e=document.createElement('div'); e.className='choice'; e.textContent=x;
+  e.onclick=()=>{if(box.querySelector('.sel')) return;e.classList.add('sel');box.querySelectorAll('.choice').forEach((c,j)=>{if(j===d[4])c.classList.add('ok');if(j===i&&i!==d[4])c.classList.add('no')});const ok=i===d[4];document.getElementById('rIntFeed').className='feedback '+(ok?'good':'bad');document.getElementById('rIntFeed').textContent=(ok?'Correct. ':'Response recorded. ')+(ok?'Your interpretation matches the target answer.':'The target answer is highlighted for research scoring.');next.disabled=false};
+  box.appendChild(e);
+ });
+ next.onclick=recordInterpret;
+}
+function recordInterpret(){
+ const picked=document.querySelector('#rIntOpts .choice.sel'); if(!picked) return;
+ const d=interpretationData[research.interpret.i],chosen=picked.textContent,idx=d[3].indexOf(chosen),ok=idx===d[4];
+ research.interpret.answers.push({id:d[0],response:chosen,correct:ok});
+ if(ok) research.interpret.correct++;
+ if(research.interpret.i<interpretationData.length-1){research.interpret.i++;renderInterpret()}else{
+  document.getElementById('rIntFeed').className='feedback good';
+  document.getElementById('rIntFeed').textContent='Interpretation test complete. Open Summary to review this session.';
+  document.getElementById('rIntNext').disabled=true;
+ }
+ updateResearchSummary();
+ saveLocalSession();
+}
+
+function renderExperiment(){
+ const d=experimentData[research.experiment.i],p=research.experiment.i/experimentData.length*100;
+ document.getElementById('rExpTitle').textContent=d[0]+' — Same message, different format';
+ document.getElementById('rExpA').textContent=d[1]; document.getElementById('rExpB').textContent=d[2];
+ document.getElementById('rExpQuestion').textContent=d[3];
+ document.getElementById('rExpCount').textContent=`${research.experiment.i+1} / ${experimentData.length}`;
+ document.getElementById('rExpProgress').style.width=p+'%';
+ document.getElementById('rExpFeed').textContent='';
+ const next=document.getElementById('rExpNext'); next.disabled=true;
+ const box=document.getElementById('rExpOpts'); box.innerHTML='';
+ d[4].forEach((x,i)=>{
+  const e=document.createElement('div');e.className='choice';e.textContent=x;
+  e.onclick=()=>{if(box.querySelector('.sel')) return;e.classList.add('sel');box.querySelectorAll('.choice').forEach((c,j)=>{if(j===d[5])c.classList.add('ok');if(j===i&&i!==d[5])c.classList.add('no')});document.getElementById('rExpFeed').className='feedback good';document.getElementById('rExpFeed').textContent='Response selected. Record the participant’s choice exactly.';next.disabled=false};
+  box.appendChild(e);
+ });
+ next.onclick=recordExperiment;
+}
+function recordExperiment(){
+ const picked=document.querySelector('#rExpOpts .choice.sel'); if(!picked) return;
+ const d=experimentData[research.experiment.i],chosen=picked.textContent;
+ research.experiment.answers.push({id:d[0],response:chosen});
+ if(chosen==='Version B') research.experiment.versionB++;
+ if(research.experiment.i<experimentData.length-1){research.experiment.i++;renderExperiment()}else{
+  document.getElementById('rExpFeed').className='feedback good';
+  document.getElementById('rExpFeed').textContent='Experiment complete. Open Summary to review this session.';
+  document.getElementById('rExpNext').disabled=true;
+ }
+ updateResearchSummary();
+ saveLocalSession();
+}
+
+function escapeHtml(s){return String(s).replace(/[&<>'"]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[m]});}
+function buildDiary(){
+ const box=document.getElementById('diaryRows'); box.innerHTML='';
+ for(let i=1;i<=7;i++){
+  const saved=research.diary.find(x=>x.day===i)||{};
+  box.insertAdjacentHTML('beforeend',`<div class="diary-grid" style="margin-bottom:8px"><div><span class="badge">Day ${i}</span></div><input id="dmsg${i}" placeholder="Example: See you 👋" value="${escapeHtml(saved.message||'')}"><input id="dfn${i}" placeholder="farewell" value="${escapeHtml(saved.function||'')}"></div>`);
+ }
+}
+function saveDiary(){
+ research.diary=[];
+ for(let i=1;i<=7;i++){
+  const message=document.getElementById('dmsg'+i).value.trim(), fn=document.getElementById('dfn'+i).value.trim();
+  if(message||fn) research.diary.push({day:i,message:message,function:fn});
+ }
+ const f=document.getElementById('diaryFeed'); f.className='feedback good'; f.textContent=`Saved ${research.diary.length} diary day(s) in this browser session.`;
+ updateResearchSummary();
+ saveLocalSession();
+}
+function clearDiary(){research.diary=[];buildDiary();document.getElementById('diaryFeed').textContent='';updateResearchSummary();saveLocalSession();}
+
+function updateResearchSummary(){
+ const s=research.survey,it=research.interpret,e=research.experiment;
+ document.getElementById('sumSurvey').textContent=`${s.answers.length} / ${surveyData.length}`;
+ document.getElementById('sumInt').textContent=`${it.answers.length} / ${interpretationData.length}`;
+ document.getElementById('sumExp').textContent=`${e.answers.length} / ${experimentData.length}`;
+ document.getElementById('sumDiary').textContent=`${research.diary.length} / 7`;
+ document.getElementById('sumYes').textContent=s.stats.Yes;
+ document.getElementById('sumNo').textContent=s.stats.No;
+ document.getElementById('sumUnsure').textContent=s.stats['Not sure'];
+ document.getElementById('sumIntCorrect').textContent=it.correct;
+ const sp=s.answers.length?Math.round(s.stats.Yes/s.answers.length*100):0, ep=e.answers.length?Math.round(e.versionB/e.answers.length*100):0;
+ document.getElementById('sumYesBar').style.width=sp+'%'; document.getElementById('sumYesPct').textContent=sp+'% Yes';
+ document.getElementById('sumExpBar').style.width=ep+'%'; document.getElementById('sumExpPct').textContent=ep+'% Version B';
+ document.getElementById('resResearch').textContent=s.answers.length+it.answers.length+e.answers.length;
+}
+function resetAllResearch(){
+  startNewParticipant();
+}
+
+function csvCell(v){const s=String(v??'');return '"'+s.replace(/"/g,'""')+'"';}
+
+function exportAllResearch(){
+  const sessions=exportCurrentAndHistory();
+  if(!sessions.length){
+    alert('No research results have been recorded yet.');
+    return;
+  }
+  const rows=[['Session ID','Started At','Finished At','Module','Item','Message/Prompt','Response','Correct','Score']];
+  sessions.forEach(sess=>{
+    const sid=sess.sessionId||'';
+    const started=sess.startedAt||'';
+    const finished=sess.finishedAt||'';
+    const score=sess.state?.score??0;
+    const r=sess.research||freshResearch();
+
+    (r.survey?.answers||[]).forEach(a=>{
+      const d=surveyData.find(x=>x[0]===a.id);
+      if(d) rows.push([sid,started,finished,'Questionnaire',a.id,d[1]+' | '+d[2],a.response,'',score]);
+    });
+    (r.interpret?.answers||[]).forEach(a=>{
+      const d=interpretationData.find(x=>x[0]===a.id);
+      if(d) rows.push([sid,started,finished,'Interpretation Test',a.id,d?d[1]+' | '+d[2]:'',a.response,a.correct?'Yes':'No',score]);
+    });
+    (r.experiment?.answers||[]).forEach(a=>{
+      const d=experimentData.find(x=>x[0]===a.id);
+      if(d) rows.push([sid,started,finished,'Replacement Experiment',a.id,d[1]+' | '+d[2]+' | '+d[3],a.response,'',score]);
+    });
+    (r.diary||[]).forEach(d=>{
+      rows.push([sid,started,finished,'Seven-Day Diary','Day '+d.day,d.message,d.function,'',score]);
+    });
+    if(!(r.survey?.answers||[]).length && !(r.interpret?.answers||[]).length && !(r.experiment?.answers||[]).length && !(r.diary||[]).length){
+      rows.push([sid,started,finished,'Session Summary','No responses','','','',score]);
+    }
+  });
+  const csv='\ufeff'+rows.map(r=>r.map(csvCell).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='emoji_detective_all_results.csv';
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),500);
+}
+
+
+loadLocalSession();
+renderSurvey();
+renderInterpret();
+renderExperiment();
+buildDiary();
+updateResearchSummary();
+updateHeader();
+updateSaveStatus();
+
+const cText=document.getElementById('createText'),cEmoji=document.getElementById('createEmoji');
+cText.addEventListener('input',previewCreate);cEmoji.addEventListener('change',previewCreate);
+function previewCreate(){let t=cText.value.trim();document.getElementById('previewMsg').textContent=t?(t+' '+cEmoji.value):'Your message will appear here.'}
+function analyseCreation(){let t=cText.value.trim(),f=document.getElementById('createFeed');if(!t){f.className='feedback bad';f.textContent='Please write a short English message first.';return}let words=t.split(/\s+/).filter(Boolean).length;if(words<3||words>10){f.className='feedback bad';f.textContent='Try a message of 3–10 words so the meaning stays easy to analyse.';return}f.className='feedback good';f.textContent='Good research example. Your message contains '+words+' words and uses '+cEmoji.value+'.';addScore(15,true)}
+function clearCreation(){cText.value='';previewCreate();document.getElementById('createFeed').textContent=''}
+
+function updateResults(){document.getElementById('resScore').textContent=state.score;document.getElementById('resCorrect').textContent=state.correct;let b=state.score>=150?'Emoji Master':state.score>=90?'Emoji Expert':state.score>=45?'Message Detective':'Starter';document.getElementById('resBadge').textContent=b;document.getElementById('resResearch').textContent=research.survey.answers.length+research.interpret.answers.length+research.experiment.answers.length}
+updateResearchSummary();updateHeader();updateSaveStatus();
+window.addEventListener('beforeunload',saveLocalSession);
+</script>
+</body>
+</html>
