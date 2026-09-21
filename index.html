@@ -3,78 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Emoji Detective — Version 4 (Auto Save)</title>
+<title>Emoji Communication Research Lab</title>
 <style>
-:root{
- --bg:#f4f6fb;--panel:#fff;--ink:#172033;--muted:#6d768b;--primary:#5b5ce2;
- --primary2:#8b5cf6;--line:#e4e7f0;--good:#16834b;--bad:#c93a3a;--warn:#a06a00;
- --shadow:0 16px 45px rgba(35,43,91,.10);--radius:22px
-}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#f7f7ff,#eef7ff);font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--ink)}
-header{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;padding:20px}
-.head{max-width:1180px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:18px}
-.logo{font-weight:900;font-size:25px}.tagline{font-size:13px;opacity:.88}.headscore{display:flex;gap:10px}
-.pill{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);padding:9px 13px;border-radius:13px;text-align:center;min-width:90px}.pill b{display:block;font-size:20px}.pill span{font-size:10px;opacity:.8}
-nav{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 4px 18px rgba(20,30,60,.06)}
-.navin{max-width:1180px;margin:auto;display:flex;gap:6px;overflow:auto;padding:8px 14px}
-.navbtn{white-space:nowrap;border:0;background:transparent;padding:10px 14px;border-radius:11px;font-weight:750;color:#5d667a;cursor:pointer}.navbtn:hover,.navbtn.active{background:#efefff;color:#4445b8}
-main{max-width:1180px;margin:28px auto;padding:0 17px}.view{display:none}.view.active{display:block}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:25px;margin-bottom:18px}
-.hero{padding:42px;text-align:center}.hero .heroemoji{font-size:70px}.hero h1{font-size:40px;margin:9px 0}.hero p{max-width:760px;margin:0 auto 24px;color:var(--muted);line-height:1.65}
-.btn{border:0;background:var(--primary);color:#fff;padding:12px 17px;border-radius:12px;font-weight:800;cursor:pointer}.btn:hover{filter:brightness(1.04);transform:translateY(-1px)}.btn.secondary{background:#ececff;color:#4546bb}.btn.light{background:#fff;border:1px solid #d6d8ec;color:var(--primary)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}.tile{border:1px solid var(--line);border-radius:17px;padding:18px;background:#fbfbff}.tile .ic{font-size:30px}.tile h3{margin:8px 0 5px}.tile p{margin:0;color:var(--muted);line-height:1.45}
-.kicker{text-transform:uppercase;letter-spacing:.09em;font-size:12px;font-weight:900;color:var(--primary)}h2{font-size:28px;margin:7px 0 12px}h3{font-size:20px}
-.message{background:#f7f7ff;border:1px dashed #ced1f4;border-radius:18px;padding:24px;text-align:center;font-size:30px;margin:17px 0}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}.choicegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:11px}.choice{border:2px solid var(--line);padding:15px;border-radius:14px;text-align:center;font-weight:750;background:white;cursor:pointer}.choice:hover{border-color:#b5b6ee;background:#fafaff}.choice.sel{border-color:var(--primary);background:#f0f0ff}.choice.ok{border-color:var(--good);background:#effaf4}.choice.no{border-color:var(--bad);background:#fff0f0}
-.feedback{min-height:25px;margin:15px 0;font-weight:800}.good{color:var(--good)}.bad{color:var(--bad)}.muted{color:var(--muted)}.small{font-size:13px;color:var(--muted)}
-.topline{display:flex;justify-content:space-between;align-items:start;gap:12px}.levelbar{height:9px;background:#eceef7;border-radius:20px;overflow:hidden;margin:13px 0 22px}.levelbar div{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary2));width:0}
-.actions{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:20px}
-.badge{display:inline-block;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:800;background:#f0efff;color:#4d4eb7}
-.compare .box{border:1px solid var(--line);border-radius:18px;padding:18px}.compare .box h4{text-align:center;color:var(--muted);margin:0}
-textarea,input,select{width:100%;border:1px solid #d6d9e5;border-radius:12px;padding:13px;font:inherit;background:#fff}textarea{min-height:110px;resize:vertical}
-.tablewrap{overflow:auto}.data-table{width:100%;border-collapse:collapse}.data-table th,.data-table td{padding:11px;border-bottom:1px solid var(--line);text-align:left}.data-table th{background:#f6f6ff}
-.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px}.stat{border:1px solid var(--line);border-radius:16px;padding:16px}.stat b{font-size:25px;display:block}.stat span{font-size:12px;color:var(--muted)}
-.bar{height:13px;background:#eceef7;border-radius:15px;overflow:hidden}.bar div{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary2))}
-.list{margin:0;padding-left:19px;line-height:1.7}
-.note{background:#fff9e8;border:1px solid #f0dda5;color:#6f5815;padding:14px;border-radius:14px}
-.successbox{background:#effaf4;border:1px solid #bde8cc;padding:15px;border-radius:14px}
-.save-status{background:#f7f7ff;border:1px solid #d9dcf2;padding:12px 14px;border-radius:14px;margin-top:14px;font-size:13px;color:#596176}
-.save-status b{color:#4445b8}
-footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
-@media(max-width:760px){.row{grid-template-columns:1fr}.hero{padding:28px}.hero h1{font-size:31px}.head{align-items:flex-start}.headscore{gap:5px}.pill{min-width:76px}}
+:root{--bg:#f5f7fb;--panel:#fff;--ink:#182238;--muted:#6c758a;--primary:#5b5ce2;--primary2:#8b5cf6;--line:#e2e6f0;--good:#17844d;--bad:#c33b3b;--warn:#8b6500;--shadow:0 14px 38px rgba(31,42,85,.09);--radius:20px}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#f7f8ff,#eef7ff);font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--ink)}
+header{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;padding:22px}
+.head{max-width:1180px;margin:auto;display:flex;justify-content:space-between;gap:16px;align-items:center}.logo{font-weight:900;font-size:25px}.tagline{font-size:13px;opacity:.88;margin-top:4px}.headscore{display:flex;gap:10px}.pill{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:9px 14px;border-radius:13px;text-align:center;min-width:105px}.pill b{display:block;font-size:19px}.pill span{font-size:10px;opacity:.8}
+nav{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 4px 18px rgba(20,30,60,.05)}.navin{max-width:1180px;margin:auto;display:flex;gap:8px;padding:9px 14px;overflow:auto}.navbtn{border:0;background:transparent;padding:11px 15px;border-radius:11px;font-weight:800;color:#596278;cursor:pointer}.navbtn.active{background:#efefff;color:#4445b8}
+main{max-width:1180px;margin:24px auto;padding:0 16px}.view{display:none}.view.active{display:block}.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:18px}.hero{text-align:center;padding:36px}.hero .heroemoji{font-size:64px}.hero h1{font-size:38px;margin:10px 0}.hero p{max-width:780px;margin:0 auto 20px;color:var(--muted);line-height:1.6}
+.btn{border:0;background:var(--primary);color:#fff;padding:12px 17px;border-radius:12px;font-weight:850;cursor:pointer}.btn.secondary{background:#ececff;color:#4546bb}.btn.light{background:#fff;border:1px solid #d6d9e7;color:var(--primary)}.btn.danger{background:#fff0f0;color:#b52f2f;border:1px solid #efc9c9}.btn:disabled{opacity:.45;cursor:not-allowed}.actions{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-top:18px}
+.kicker{text-transform:uppercase;letter-spacing:.08em;font-size:12px;font-weight:900;color:var(--primary)}h2{font-size:28px;margin:7px 0 10px}h3{font-size:20px;margin:0 0 10px}.muted{color:var(--muted)}.small{font-size:12px;color:var(--muted)}.note{background:#fff9e8;border:1px solid #f0dda5;color:#6f5815;border-radius:14px;padding:14px}.success{background:#effaf4;border:1px solid #bde8cc;border-radius:14px;padding:14px}
+input,textarea{width:100%;border:1px solid #d6d9e5;border-radius:12px;padding:13px;font:inherit;background:#fff}textarea{min-height:90px;resize:vertical}.field{margin-top:12px}.field label{display:block;font-size:12px;font-weight:850;margin-bottom:7px}.message{background:#f7f7ff;border:1px dashed #ced1f4;border-radius:18px;padding:20px;text-align:center;font-size:24px;margin:14px 0}.choicegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:11px}.choice{border:2px solid var(--line);padding:14px;border-radius:14px;text-align:center;font-weight:750;background:#fff;cursor:pointer}.choice:hover{border-color:#b9bbef;background:#fafaff}.choice.sel{border-color:var(--primary);background:#f0f0ff}.choice.ok{border-color:var(--good);background:#effaf4}.choice.no{border-color:var(--bad);background:#fff0f0}.feedback{min-height:24px;margin:14px 0;font-weight:800}.good{color:var(--good)}.bad{color:var(--bad)}
+.progress{height:9px;background:#eceef7;border-radius:30px;overflow:hidden;margin:12px 0 20px}.progress div{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary2));width:0}.qmeta{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}.badge{display:inline-block;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:850;background:#f0efff;color:#4d4eb7}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.tab{border:1px solid #d8daea;background:#fff;padding:10px 13px;border-radius:12px;font-weight:800;color:#596176;cursor:pointer}.tab.active{background:#efefff;color:#4445b8;border-color:#c9c8f1}.panel{display:none}.panel.active{display:block}
+.diary-grid{display:grid;grid-template-columns:90px 1fr 150px;gap:8px;align-items:center}.diary-grid input{padding:10px}
+.summarygrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}.stat{border:1px solid var(--line);border-radius:16px;padding:16px}.stat b{display:block;font-size:25px}.stat span{font-size:12px;color:var(--muted)}
+.result-card{border:1px solid var(--line);border-radius:18px;background:#fff;padding:18px;margin-bottom:14px}.result-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}.student-code{font-size:21px;font-weight:900}.scorebox{background:#efefff;color:#4445b8;border-radius:13px;padding:10px 13px;text-align:center}.scorebox b{display:block;font-size:23px}.result-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px;margin:14px 0}.meta{background:#f8f9fd;border:1px solid var(--line);padding:10px;border-radius:12px}.meta b{display:block;font-size:18px}.meta span{font-size:11px;color:var(--muted)}.details{display:none;margin-top:15px;border-top:1px solid var(--line);padding-top:15px}.details.open{display:block}.ans-section{margin-top:14px}.ans-section h4{margin:0 0 8px}.answer-row{display:grid;grid-template-columns:70px 1fr auto;gap:10px;padding:9px 0;border-bottom:1px solid #eef0f5;align-items:start}.answer-row:last-child{border-bottom:0}.ans-id{font-weight:850;color:var(--primary)}.ans-text{color:#344057}.correct-tag{font-size:11px;font-weight:900;border-radius:999px;padding:5px 8px}.correct-tag.yes{background:#effaf4;color:var(--good)}.correct-tag.no{background:#fff0f0;color:var(--bad)}.correct-tag.na{background:#f3f4f7;color:#697287}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}.hidden{display:none!important}
+@media(max-width:760px){.head{align-items:flex-start}.headscore{display:none}.hero h1{font-size:31px}.diary-grid{grid-template-columns:1fr}.answer-row{grid-template-columns:58px 1fr}.correct-tag{grid-column:2}}
 
-.research-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 0}
-.rtab{border:1px solid #d8daea;background:#fff;padding:10px 13px;border-radius:12px;font-weight:800;color:#596176;cursor:pointer}
-.rtab.active{background:#efefff;color:#4445b8;border-color:#c9c8f1}
-.rpanel{display:none}.rpanel.active{display:block}
-.qmeta{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.mini-progress{height:8px;background:#eceef7;border-radius:20px;overflow:hidden;margin:12px 0 20px}
-.mini-progress div{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary2));width:0}
-.answered{opacity:.85}
-.diary-grid{display:grid;grid-template-columns:90px 1fr 130px;gap:8px;align-items:center}
-.diary-grid input{padding:10px}
-.stat .tiny{font-size:11px;color:var(--muted);display:block;margin-top:3px}
-@media(max-width:760px){.diary-grid{grid-template-columns:1fr}}
+/* Added non-research section styles only */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}.tile{border:1px solid var(--line);border-radius:17px;padding:18px;background:#fbfbff}.tile .ic{font-size:30px}.tile h3{margin:8px 0 5px}.tile p{margin:0;color:var(--muted);line-height:1.45}
+.topline{display:flex;justify-content:space-between;align-items:start;gap:12px}.levelbar{height:9px;background:#eceef7;border-radius:20px;overflow:hidden;margin:13px 0 22px}.levelbar div{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary2));width:0}.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}.compare .box{border:1px solid var(--line);border-radius:18px;padding:18px}.compare .box h4{text-align:center;color:var(--muted);margin:0}.data-table{width:100%;border-collapse:collapse}.data-table th,.data-table td{padding:11px;border-bottom:1px solid var(--line);text-align:left}.data-table th{background:#f6f6ff}.tablewrap{overflow:auto}.list{margin:0;padding-left:19px;line-height:1.7}
+@media(max-width:760px){.row{grid-template-columns:1fr}.hero{padding:28px}.hero h1{font-size:31px}}
+
 </style>
 </head>
 <body>
-<header><div class="head">
- <div><div class="logo">🕵️ Emoji Detective <span style="opacity:.7">V3</span></div><div class="tagline">Understand the message. Detect the emotion. Think about the context.</div></div>
- <div class="headscore"><div class="pill"><b id="score">0</b><span>POINTS</span></div><div class="pill"><b id="streak">0</b><span>STREAK</span></div></div>
-</div></header>
-
+<header><div class="head"><div><div class="logo">🕵️ Emoji Communication Research Lab</div><div class="tagline">Anonymous classroom research tool • Research Mode + individual results</div></div><div class="headscore"><div class="pill"><b id="savedCount">0</b><span>SAVED STUDENTS</span></div><div class="pill"><b id="currentScore">0 / 15</b><span>CURRENT SCORE</span></div></div></div></header>
 <nav><div class="navin">
- <button class="navbtn active" data-view="home">🏠 Home</button>
- <button class="navbtn" data-view="learn">📚 Learn</button>
- <button class="navbtn" data-view="investigate">🔍 Investigate</button>
- <button class="navbtn" data-view="compare">🔄 Compare</button>
- <button class="navbtn" data-view="detective">🕵️ Detective</button>
- <button class="navbtn" data-view="create">✍️ Create</button>
- <button class="navbtn" data-view="research">📊 Research Mode</button>
- <button class="navbtn" data-view="guide">📖 Emoji Guide</button>
- <button class="navbtn" data-view="results">🏆 Results</button>
+<button class="navbtn" data-view="home">🏠 Home</button><button class="navbtn" data-view="learn">📚 Learn</button><button class="navbtn" data-view="investigate">🔍 Investigate</button><button class="navbtn" data-view="compare">🔄 Compare</button><button class="navbtn" data-view="detective">🕵️ Detective</button><button class="navbtn" data-view="create">✍️ Create</button><button class="navbtn" data-view="research">📊 Research Mode</button><button class="navbtn" data-view="guide">📖 Emoji Guide</button><button class="navbtn" data-view="results">🏆 Results</button>
+<button class="navbtn" data-view="playResults">🎯 Detective Results</button>
 </div></nav>
-
 <main>
 <section id="home" class="view active">
  <div class="card hero">
@@ -94,7 +53,6 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
  </div>
  <div class="card note" style="margin-top:18px"><b>Project link:</b> This product supports the research project <i>“When Emojis Replace Words: Understanding English Messages”</i>. Final research statistics should be based on real participant responses, not invented data.</div>
 </section>
-
 <section id="learn" class="view">
  <div class="card"><span class="kicker">Learning Lab</span><h2>How do emojis work?</h2>
  <p class="muted">An emoji can add information that words do not show directly. It can signal emotion, reaction, agreement, farewell, celebration or another social meaning. The exact interpretation still depends on the message and context.</p></div>
@@ -108,7 +66,6 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
  </div>
  <div class="card"><h3>Three questions to ask when you see an emoji</h3><ol class="list"><li>What does the emoji usually communicate?</li><li>What does it communicate in this exact message?</li><li>Would the message feel different without it?</li></ol></div>
 </section>
-
 <section id="investigate" class="view">
  <div class="card">
   <div class="topline"><div><span class="kicker">Investigation</span><h2 id="invTitle">Level 1 — Emoji Meaning</h2></div><div class="badge" id="invCounter">1 / 8</div></div>
@@ -116,7 +73,6 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
   <div id="invArea"></div>
  </div>
 </section>
-
 <section id="compare" class="view">
  <div class="card">
   <span class="kicker">Compare Mode</span><h2>Same words, different signal</h2>
@@ -131,7 +87,6 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
   <div class="actions"><button class="btn secondary" id="cmpNext" disabled>Next comparison</button><span class="small" id="cmpCount">1 / 6</span></div>
  </div>
 </section>
-
 <section id="detective" class="view">
  <div class="card">
   <span class="kicker">Context Detective</span><h2>Look at the whole message</h2>
@@ -143,110 +98,17 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
  </div>
  <div class="card note"><b>Detective rule:</b> Never interpret an emoji alone. Read the words around it and think about the situation.</div>
 </section>
-
 <section id="create" class="view">
  <div class="card"><span class="kicker">Creative Lab</span><h2>Create your own English message</h2>
   <p class="muted">Write a short message of 3–10 words. Then choose the emoji you want to use.</p>
   <textarea id="createText" placeholder="Example: See you tomorrow"></textarea>
   <div style="margin-top:12px"><label class="small">Choose an emoji</label><select id="createEmoji"><option>😊</option><option>🙂</option><option>👍</option><option>👋</option><option>😮</option><option>😔</option><option>🎉</option><option>❤️</option><option>😎</option><option>😂</option></select></div>
   <div class="message" id="previewMsg">Your message will appear here.</div>
-  <div class="actions"><button class="btn" onclick="analyseCreation()">Analyse My Message</button><button class="btn secondary" onclick="clearCreation()">Clear</button></div>
+  <div class="actions"><button class="btn" onclick="analyseCreationPlay()">Analyse My Message</button><button class="btn secondary" onclick="clearCreationPlay()">Clear</button></div>
   <div class="feedback" id="createFeed"></div>
  </div>
  <div class="card successbox"><b>What makes a good research example?</b><p style="margin:7px 0 0">A clear English message where the emoji adds a noticeable emotional or communicative signal. Avoid personal information.</p></div>
 </section>
-
-<section id="research" class="view">
- <div class="card">
-  <span class="kicker">Research Mode • V3</span><h2>Emoji Communication Research Lab</h2>
-  <p class="muted">A multi-method classroom research tool for the project <i>“When Emojis Replace Words: Understanding English Messages”</i>. It separates opinion, interpretation and comparison tasks so the evidence can be analysed more clearly.</p>
-  <div class="note"><b>Research ethics:</b> use informed consent as required by your school; collect no names, private chats or sensitive personal information. Export anonymous response data and combine participant files later in a spreadsheet.</div>
-  <div class="research-tabs">
-   <button class="rtab active" data-rpanel="rSurvey">📋 Questionnaire</button>
-   <button class="rtab" data-rpanel="rInterpret">🔍 Interpretation Test</button>
-   <button class="rtab" data-rpanel="rExperiment">🔄 Replacement Experiment</button>
-   <button class="rtab" data-rpanel="rDiary">📅 7-Day Diary</button>
-   <button class="rtab" data-rpanel="rSummary">📊 Summary</button>
-  </div>
- </div>
-
- <div id="rSurvey" class="rpanel active">
-  <div class="card">
-   <div class="qmeta"><div><span class="badge">Questionnaire</span><h3 id="rSurveyMsg">“Thanks 😊”</h3></div><span class="small" id="rSurveyCount">1 / 25</span></div>
-   <div class="mini-progress"><div id="rSurveyProgress"></div></div>
-   <p id="rSurveyQuestion" style="font-weight:800"></p>
-   <div class="choicegrid" id="rSurveyOpts"></div>
-   <div class="feedback" id="rSurveyFeed"></div>
-   <div class="actions"><button class="btn secondary" id="rSurveyNext" disabled>Record & Next</button></div>
-  </div>
- </div>
-
- <div id="rInterpret" class="rpanel">
-  <div class="card">
-   <div class="qmeta"><div><span class="badge">Message Interpretation Test</span><h3 id="rIntMsg">“Okay 🙂”</h3></div><span class="small" id="rIntCount">1 / 15</span></div>
-   <div class="mini-progress"><div id="rIntProgress"></div></div>
-   <p id="rIntQuestion" style="font-weight:800"></p>
-   <div class="choicegrid" id="rIntOpts"></div>
-   <div class="feedback" id="rIntFeed"></div>
-   <div class="actions"><button class="btn secondary" id="rIntNext" disabled>Record & Next</button></div>
-  </div>
- </div>
-
- <div id="rExperiment" class="rpanel">
-  <div class="card">
-   <div class="qmeta"><div><span class="badge">Emoji Replacement Experiment</span><h3 id="rExpTitle">Comparison 1</h3></div><span class="small" id="rExpCount">1 / 10</span></div>
-   <div class="mini-progress"><div id="rExpProgress"></div></div>
-   <div class="compare row">
-    <div class="box"><h4>Version A — words only</h4><div class="message" id="rExpA">Thanks.</div></div>
-    <div class="box"><h4>Version B — words + emoji</h4><div class="message" id="rExpB">Thanks 😊</div></div>
-   </div>
-   <p id="rExpQuestion" style="font-weight:800;margin-top:18px"></p>
-   <div class="choicegrid" id="rExpOpts"></div>
-   <div class="feedback" id="rExpFeed"></div>
-   <div class="actions"><button class="btn secondary" id="rExpNext" disabled>Record & Next</button></div>
-  </div>
- </div>
-
- <div id="rDiary" class="rpanel">
-  <div class="card">
-   <span class="badge">Seven-Day Emoji Diary</span><h3>Record anonymous, non-private examples</h3>
-   <p class="muted">Use an example you create yourself or a generic example provided in class. Do not copy or submit real private conversations.</p>
-   <div class="diary-grid" style="font-weight:800;margin-bottom:8px"><div>Day</div><div>English message</div><div>Emoji / function</div></div>
-   <div id="diaryRows"></div>
-   <div class="actions"><button class="btn" onclick="saveDiary()">Save Diary</button><button class="btn secondary" onclick="clearDiary()">Clear</button></div>
-   <div class="feedback" id="diaryFeed"></div>
-  </div>
- </div>
-
- <div id="rSummary" class="rpanel">
-  <div class="card">
-   <span class="badge">Anonymous Session Summary</span><h3>Research progress</h3>
-   <div class="statgrid">
-    <div class="stat"><b id="sumSurvey">0 / 25</b><span>questionnaire responses</span></div>
-    <div class="stat"><b id="sumInt">0 / 15</b><span>interpretation responses</span></div>
-    <div class="stat"><b id="sumExp">0 / 10</b><span>experiment responses</span></div>
-    <div class="stat"><b id="sumDiary">0 / 7</b><span>diary days completed</span></div>
-   </div>
-  </div>
-  <div class="card">
-   <h3>Questionnaire distribution</h3>
-   <p class="small">There is no correct answer here. Participants report how strongly they agree or disagree.</p>
-   <div class="statgrid">
-    <div class="stat"><b id="sumSA">0</b><span>Strongly agree</span></div>
-    <div class="stat"><b id="sumA">0</b><span>Agree</span></div>
-    <div class="stat"><b id="sumN">0</b><span>Neutral / unsure</span></div>
-    <div class="stat"><b id="sumD">0</b><span>Disagree</span></div>
-    <div class="stat"><b id="sumSD">0</b><span>Strongly disagree</span></div>
-    <div class="stat"><b id="sumIntCorrect">0</b><span>Interpretation correct</span></div>
-   </div>
-   <div style="margin-top:18px"><div class="small">Agreement share (Agree + Strongly agree)</div><div class="bar"><div id="sumAgreeBar" style="width:0"></div></div><div class="small" id="sumAgreePct">0%</div></div>
-   <div style="margin-top:18px"><div class="small">Experiment: Version B selected</div><div class="bar"><div id="sumExpBar" style="width:0"></div></div><div class="small" id="sumExpPct">0%</div></div>
-  </div>
-  <div class="card note"><b>Important:</b> these figures describe the current anonymous browser session only. They are not final scientific findings until real participant data have been collected, checked and aggregated.</div>
-  <div class="save-status"><b>💾 Auto-save is ON.</b> Your current answers are saved in this browser automatically. <span id="saveStatus">Not saved yet.</span><br><span class="small">Anonymous session: <b id="sessionIdLabel">—</b></span></div><div class="actions"><button class="btn light" onclick="startNewParticipant()">✅ Save current & start new participant</button><button class="btn secondary" onclick="exportAllResearch()">📥 Export all results (CSV)</button></div>
- </div>
-</section>
-
 <section id="guide" class="view">
  <div class="card"><span class="kicker">Reference Guide</span><h2>Emoji Meaning Guide for English Learners</h2>
  <p class="muted">Learning examples for the prototype. In the final research project, this guide can be updated using the student’s own collected examples and findings.</p>
@@ -262,580 +124,209 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
  <tr><td>❤️</td><td>affection / strong positive feeling</td><td>Thank you ❤️</td><td>Interpretation depends on the relationship and context.</td></tr>
  </tbody></table></div></div>
 </section>
+<section id="research" class="view active">
+  <div class="card hero">
+    <div class="heroemoji">📊🔍🧪</div>
+    <h1>Emoji Communication Research Lab</h1>
+    <p>This version is focused only on the research study. Every participant gets a separate anonymous student code. Their questionnaire answers, interpretation answers, experiment choices, diary entries and score are stored separately.</p>
+    <div class="note" style="text-align:left"><b>Privacy:</b> use a class code or anonymous student code instead of a full name. Do not collect private chats or sensitive personal information.</div>
+  </div>
 
-<section id="results" class="view">
- <div class="card hero">
+  <div class="card">
+    <span class="kicker">Participant</span><h2>Start a student session</h2>
+    <p class="muted">Enter an anonymous code such as S01, S02, S03. The code will stay attached to this student's answers.</p>
+    <div class="field"><label>Anonymous student code</label><input id="studentCode" maxlength="30" placeholder="Example: S01"></div>
+    <div class="actions"><button class="btn" onclick="startSession()">Start / Continue Student</button><span class="small" id="sessionStatus">No student session selected.</span></div>
+  </div>
+
+  <div id="researchWorkspace" class="hidden">
+    <div class="card"><div class="qmeta"><div><span class="badge">Current student</span><h3 id="currentStudentLabel">—</h3></div><span class="small" id="overallProgressText">0% complete</span></div><div class="progress"><div id="overallProgress"></div></div><div class="success">💾 <b>Auto-save is ON.</b> Every recorded answer is saved in this browser immediately.</div></div>
+
+    <div class="card">
+      <div class="tabs">
+        <button class="tab active" data-panel="pSurvey">📋 Questionnaire</button>
+        <button class="tab" data-panel="pInterpret">🔍 Interpretation Test</button>
+        <button class="tab" data-panel="pExperiment">🔄 Replacement Experiment</button>
+        <button class="tab" data-panel="pDiary">📅 7-Day Diary</button>
+      </div>
+    </div>
+
+    <div id="pSurvey" class="panel active">
+      <div class="card"><div class="qmeta"><div><span class="badge">Questionnaire</span><h3 id="sMsg">—</h3></div><span class="small" id="sCount">1 / 25</span></div><div class="progress"><div id="sProgress"></div></div><p id="sQuestion" style="font-weight:800"></p><div class="choicegrid" id="sOpts"></div><div class="feedback" id="sFeed"></div><div class="actions"><button class="btn secondary" id="sNext" disabled>Record & Next</button><span class="small">This section measures opinion/attitude; there is no right or wrong answer.</span></div></div>
+    </div>
+
+    <div id="pInterpret" class="panel">
+      <div class="card"><div class="qmeta"><div><span class="badge">Message Interpretation Test</span><h3 id="iMsg">—</h3></div><span class="small" id="iCount">1 / 15</span></div><div class="progress"><div id="iProgress"></div></div><p id="iQuestion" style="font-weight:800"></p><div class="choicegrid" id="iOpts"></div><div class="feedback" id="iFeed"></div><div class="actions"><button class="btn secondary" id="iNext" disabled>Record & Next</button><span class="small">Score: 1 point for each correct interpretation.</span></div></div>
+    </div>
+
+    <div id="pExperiment" class="panel">
+      <div class="card"><div class="qmeta"><div><span class="badge">Emoji Replacement Experiment</span><h3 id="eTitle">—</h3></div><span class="small" id="eCount">1 / 10</span></div><div class="progress"><div id="eProgress"></div></div><div class="compare row" style="display:grid;grid-template-columns:1fr 1fr;gap:14px"><div class="result-card"><div class="small">Version A</div><div class="message" id="eA">—</div></div><div class="result-card"><div class="small">Version B</div><div class="message" id="eB">—</div></div></div><p id="eQuestion" style="font-weight:800"></p><div class="choicegrid" id="eOpts"></div><div class="feedback" id="eFeed"></div><div class="actions"><button class="btn secondary" id="eNext" disabled>Record & Next</button><span class="small">Experiment choices are stored as research observations; they are not counted as right/wrong.</span></div></div>
+    </div>
+
+    <div id="pDiary" class="panel">
+      <div class="card"><span class="badge">Seven-Day Emoji Diary</span><h3>Record anonymous, non-private examples</h3><p class="muted">Use an example you create yourself or a generic classroom example. Do not paste real private conversations.</p><div class="diary-grid" style="font-weight:850;margin-bottom:8px"><div>Day</div><div>English message</div><div>Emoji / function</div></div><div id="diaryRows"></div><div class="actions"><button class="btn" onclick="saveDiary()">Save Diary</button><button class="btn secondary" onclick="clearDiary()">Clear Diary</button></div><div class="feedback" id="diaryFeed"></div></div>
+    </div>
+
+    <div class="card"><span class="kicker">Finish</span><h2>Save this student as a separate result</h2><div class="summarygrid"><div class="stat"><b id="liveSurvey">0 / 25</b><span>questionnaire</span></div><div class="stat"><b id="liveInterpret">0 / 15</b><span>interpretation</span></div><div class="stat"><b id="liveExperiment">0 / 10</b><span>experiment</span></div><div class="stat"><b id="liveDiary">0 / 7</b><span>diary</span></div></div><div class="success" style="margin-top:14px"><b>Research score:</b> <span id="liveScore">0 / 15</span> interpretation questions correct (<span id="livePct">0%</span>).</div><div class="actions"><button class="btn" onclick="finishStudent()">✅ Finish & Save Student Result</button><button class="btn secondary" onclick="go('results')">Open Results</button></div><div class="feedback" id="finishFeed"></div></div>
+  </div>
+</section>
+
+
+<section id="playResults" class="view">
+ <div class="card hero" id="playResultsCard">
   <div class="heroemoji">🏆</div><h1>Your Detective Report</h1>
-  <p>The score below reflects performance in this interactive prototype. It is not a general measure of English ability.</p>
-  <div class="statgrid">
-   <div class="stat"><b id="resScore">0</b><span>total points</span></div>
-   <div class="stat"><b id="resCorrect">0 / 20</b><span>correct answers</span></div>
-   <div class="stat"><b id="resAccuracy">0%</b><span>accuracy</span></div>
-   <div class="stat"><b id="resBadge">Starter</b><span>detective level</span></div>
-   <div class="stat"><b id="resResearch">0</b><span>research responses</span></div>
-  </div>
+  <p>The score below belongs only to the learning/game sections. It is completely separate from Research Mode and the student research Results dataset.</p>
+  <div class="summarygrid"><div class="stat"><b id="playResScore">0</b><span>points</span></div><div class="stat"><b id="playResCorrect">0</b><span>correct answers</span></div><div class="stat"><b id="playResBadge">Starter</b><span>detective level</span></div></div>
+  <div class="actions"><button class="btn" onclick="go('investigate')">Investigate Again</button><button class="btn secondary" onclick="resetPlay()">Back to Home</button><button class="btn light" onclick="go('research')">Open Research Mode</button></div>
  </div>
- <div class="card">
-  <span class="badge">Score breakdown</span><h3>Where did your points come from?</h3>
-  <div class="tablewrap"><table class="data-table"><thead><tr><th>Module</th><th>Correct / completed</th><th>Points earned</th><th>Maximum</th></tr></thead>
-   <tbody>
-    <tr><td>🔍 Investigation</td><td id="resInvCorrect">0 / 8</td><td id="resInvPoints">0</td><td>80</td></tr>
-    <tr><td>🔄 Compare</td><td id="resCmpCorrect">0 / 6</td><td id="resCmpPoints">0</td><td>48</td></tr>
-    <tr><td>🕵️ Detective</td><td id="resDetCorrect">0 / 6</td><td id="resDetPoints">0</td><td>60</td></tr>
-    <tr><td>✍️ Create</td><td id="resCreateDone">0 submissions</td><td id="resCreatePoints">0</td><td>—</td></tr>
-   </tbody></table></div>
-  <div class="successbox" style="margin-top:15px"><b id="resScoreLine">0 / 188 quiz points</b><p style="margin:6px 0 0" class="small">Quiz maximum = 188 points from Investigation, Compare and Detective. Create gives separate bonus points.</p></div>
- </div>
- <div class="card">
-  <span class="badge">Answer accuracy</span><h3>Your quiz performance</h3>
-  <div class="statgrid">
-   <div class="stat"><b id="resInvAccuracy">0%</b><span>Investigation</span></div>
-   <div class="stat"><b id="resCmpAccuracy">0%</b><span>Compare</span></div>
-   <div class="stat"><b id="resDetAccuracy">0%</b><span>Detective</span></div>
-   <div class="stat"><b id="resResearchCorrect">0 / 15</b><span>Research interpretation</span></div>
-  </div>
- </div>
- <div class="card"><h3>Research progress</h3>
-  <div class="statgrid">
-   <div class="stat"><b id="resSurveyCount">0 / 25</b><span>questionnaire</span></div>
-   <div class="stat"><b id="resInterpretCount">0 / 15</b><span>interpretation test</span></div>
-   <div class="stat"><b id="resExperimentCount">0 / 10</b><span>replacement experiment</span></div>
-   <div class="stat"><b id="resDiaryCount">0 / 7</b><span>diary days</span></div>
-  </div>
- </div>
- <div class="card"><h3>What you practised</h3><ul class="list"><li>Identifying common emoji functions in English messages.</li><li>Comparing messages with and without emojis.</li><li>Using context to interpret emotional and social meaning.</li><li>Creating short English messages that use emoji meaningfully.</li></ul></div>
- <div class="card note"><b>For the scientific project:</b> research findings in the final report should come from the real anonymous participant dataset. The scores above are individual prototype performance, while research responses are kept separate for analysis.</div>
- <div class="actions"><button class="btn" onclick="go('investigate')">Investigate Again</button><button class="btn secondary" onclick="go('research')">Open Research Mode</button></div>
+</section>
+<section id="results" class="view">
+  <div class="card hero"><div class="heroemoji">🏆</div><h1>Student Results</h1><p>Each saved student is shown separately. Click <b>View full answers</b> to see every questionnaire response, interpretation answer, experiment choice and score for that student.</p></div>
+  <div class="card"><div class="actions" style="margin-top:0"><div><span class="kicker">Saved dataset</span><h2 style="margin-bottom:3px">All students</h2><div class="small" id="resultsCountText">0 students saved.</div></div><div style="display:flex;gap:9px;flex-wrap:wrap"><button class="btn" onclick="exportCSV()">📥 Export all CSV</button><button class="btn light" onclick="reloadResults()">↻ Refresh</button><button class="btn danger" onclick="deleteAllResults()">🗑 Clear all saved results</button></div></div></div>
+  <div id="resultsList"></div>
 </section>
 </main>
-
-<footer>Emoji Detective V3 • Digital research product prototype for “When Emojis Replace Words: Understanding English Messages”</footer>
-
+<footer>Emoji Communication Research Lab • Anonymous classroom research prototype</footer>
 <script>
-const CURRENT_KEY='emoji_detective_current_session_v6';
-const HISTORY_KEY='emoji_detective_completed_sessions_v6';
-
-function freshState(){
-  return {
-    score:0,
-    correct:0,
-    answered:0,
-    streak:0,
-    modules:{
-      investigate:{answered:0,correct:0,points:0},
-      compare:{answered:0,correct:0,points:0},
-      detective:{answered:0,correct:0,points:0},
-      create:{submissions:0,points:0}
-    }
-  };
-}
-
-let state=freshState();
-
-function freshResearch(){
-  return {
-    survey:{i:0,answers:[],stats:{'Strongly agree':0,'Agree':0,'Neutral / unsure':0,'Disagree':0,'Strongly disagree':0}},
-    interpret:{i:0,answers:[],correct:0},
-    experiment:{i:0,answers:[],versionB:0},
-    diary:[]
-  };
-}
-
-let research=freshResearch();
-let sessionId='P-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
-let sessionStartedAt=new Date().toISOString();
-let lastSavedAt=null;
-
-function hasSessionData(){
-  return state.score>0 || state.correct>0 ||
-    research.survey.answers.length ||
-    research.interpret.answers.length ||
-    research.experiment.answers.length ||
-    research.diary.length;
-}
-
-function saveLocalSession(){
-  const payload={
-    sessionId,
-    startedAt:sessionStartedAt,
-    savedAt:new Date().toISOString(),
-    state:JSON.parse(JSON.stringify(state)),
-    research
-  };
-  localStorage.setItem(CURRENT_KEY,JSON.stringify(payload));
-  lastSavedAt=payload.savedAt;
-  updateSaveStatus();
-}
-
-function loadLocalSession(){
-  try{
-    const raw=localStorage.getItem(CURRENT_KEY);
-    if(!raw) return;
-    const saved=JSON.parse(raw);
-    if(saved?.state){
-      const restored=freshState();
-      restored.score=Number(saved.state.score)||0;
-      restored.correct=Number(saved.state.correct)||0;
-      restored.answered=Number(saved.state.answered)||0;
-      restored.streak=Number(saved.state.streak)||0;
-      if(saved.state.modules && typeof saved.state.modules==='object'){
-        Object.keys(restored.modules).forEach(k=>{
-          if(saved.state.modules[k] && typeof saved.state.modules[k]==='object'){
-            restored.modules[k]={...restored.modules[k],...saved.state.modules[k]};
-          }
-        });
-      }
-      state=restored;
-    }
-    if(saved?.research) research=saved.research;
-    if(saved?.sessionId) sessionId=saved.sessionId;
-    if(saved?.startedAt) sessionStartedAt=saved.startedAt;
-    lastSavedAt=saved.savedAt||null;
-  }catch(err){
-    console.warn('Could not restore saved session:',err);
-  }
-}
-
-function updateSaveStatus(){
-  const el=document.getElementById('saveStatus');
-  const sid=document.getElementById('sessionIdLabel');
-  if(sid) sid.textContent=sessionId;
-  if(el){
-    el.textContent=lastSavedAt
-      ? 'Last saved: '+new Date(lastSavedAt).toLocaleString()
-      : 'Not saved yet.';
-  }
-}
-
-function getHistory(){
-  try{
-    return JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');
-  }catch(err){
-    return [];
-  }
-}
-
-function archiveCurrentSession(){
-  if(!hasSessionData()) return;
-  const history=getHistory();
-  const payload={
-    sessionId,
-    startedAt:sessionStartedAt,
-    finishedAt:new Date().toISOString(),
-    state:JSON.parse(JSON.stringify(state)),
-    research:JSON.parse(JSON.stringify(research))
-  };
-  history.push(payload);
-  localStorage.setItem(HISTORY_KEY,JSON.stringify(history));
-}
-
-function startNewParticipant(){
-  archiveCurrentSession();
-  state=freshState();
-  research=freshResearch();
-  sessionId='P-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
-  sessionStartedAt=new Date().toISOString();
-  lastSavedAt=null;
-  localStorage.removeItem(CURRENT_KEY);
-  renderSurvey(); renderInterpret(); renderExperiment(); buildDiary(); updateResearchSummary(); updateHeader(); updateSaveStatus();
-  go('research');
-  const f=document.getElementById('diaryFeed');
-  if(f){f.className='feedback good';f.textContent='Previous participant was saved. A new anonymous session has started.';}
-}
-
-function exportCurrentAndHistory(){
-  const history=getHistory();
-  const current=hasSessionData()?{
-    sessionId,startedAt:sessionStartedAt,finishedAt:null,
-    state:JSON.parse(JSON.stringify(state)),
-    research:JSON.parse(JSON.stringify(research))
-  }:null;
-  return current?[...history,current]:history;
-}
-
-function updateHeader(){document.getElementById('score').textContent=state.score;document.getElementById('streak').textContent=state.streak;updateResults()}
-function addScore(n,ok,module){
-  if(module==='create'){
-    state.modules.create.submissions++;
-    state.modules.create.points+=n;
-    state.score+=n;
-    saveLocalSession();
-    updateHeader();
-    return;
-  }
-  const m=state.modules[module];
-  if(!m) return;
-  m.answered++;
-  state.answered++;
-  m.points+=ok?n:0;
-  if(ok){m.correct++;state.score+=n;state.correct++;state.streak++;}else{state.streak=0;}
-  saveLocalSession();
-  updateHeader();
-}
-function go(id){
- document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
- document.getElementById(id).classList.add('active');
- document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===id));
- if(id==='investigate' && !invStarted){startInvestigation()}
- if(id==='compare' && !cmpStarted){startCompare()}
- if(id==='detective' && !detStarted){startDetective()}
- updateResults();window.scrollTo({top:0,behavior:'smooth'});
-}
-document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>go(b.dataset.view));
-
-// Shuffle answer positions so the correct response is not predictably A or B.
-function shuffleChoiceSet(options, correctIndex){
-  const items=options.map((text,index)=>({text,index}));
-  for(let i=items.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [items[i],items[j]]=[items[j],items[i]];
-  }
-  return {options:items.map(x=>x.text),correctIndex:items.findIndex(x=>x.index===correctIndex)};
-}
-
-const invData=[
- {title:'Level 1 — Read the context',msg:'Friend: “I forgot to bring the poster.”<br>Reply: “It’s okay 🙂”',q:'What role is 🙂 playing most clearly in this exchange?',o:['It replaces the words “it’s okay”','It changes the topic','It softens the reassurance','It shows that the friend forgot'],a:2,e:'The words already express reassurance; 🙂 mainly softens and warms the response.'},
- {title:'Level 1 — Meaning beyond the emoji',msg:'“You can start without me 👍”',q:'What is the most reasonable interpretation of 👍 here?',o:['The sender is approving the plan','The sender is saying goodbye','The sender is angry','The sender is asking a question'],a:0,e:'In this context, 👍 works as an approval signal rather than a literal replacement for the whole sentence.'},
- {title:'Level 2 — Context changes meaning',msg:'Teacher: “Please send the file before 5.”<br>Student: “Sure 🙂”',q:'Which description fits the emoji best?',o:['It makes the instruction disappear','It adds a mild, friendly tone','It proves the student is excited','It means “I disagree”'],a:1,e:'The emoji does not change the basic agreement; it can make the reply feel milder or friendlier.'},
- {title:'Level 2 — Separate words from signal',msg:'“Thanks.” → “Thanks 😊”',q:'Which part of the meaning is most likely to stay the same?',o:['The basic act of thanking','The emotional tone','The level of warmth','The social signal'],a:0,e:'The word “Thanks” still carries the basic communicative act; the emoji mainly changes tone.'},
- {title:'Level 3 — Social function',msg:'Group chat: “We finished the project! 🎉”',q:'Why is 🎉 useful in this message?',o:['It gives the project a new deadline','It adds a celebration signal','It explains who did the work','It turns the message into a question'],a:1,e:'The words announce completion; 🎉 adds a visible celebration reaction.'},
- {title:'Level 3 — Infer from wording',msg:'“Really? 😮 I didn’t expect that.”',q:'Which interpretation uses both the words and emoji?',o:['The sender is ending the conversation','The sender is asking for permission','The sender is showing surprise','The sender is congratulating someone'],a:2,e:'“Really?” and “I didn’t expect that” work with 😮 to signal surprise.'},
- {title:'Level 4 — Relationship matters',msg:'“Thank you ❤️”<br>Context A: close friend<br>Context B: school administrator',q:'What should a careful reader notice first?',o:['❤️ has exactly one meaning in every relationship','The emoji is meaningless without a second emoji','The same emoji may be interpreted differently by different readers','The words “Thank you” no longer matter'],a:2,e:'The relationship and situation can affect how strongly an emoji is interpreted.'},
- {title:'Level 4 — Best evidence',msg:'Student sees: “Okay 🙂”<br>They are unsure whether the sender is warm, neutral, or slightly distant.',q:'What is the best next step?',o:['Decide from the emoji alone','Assume the sender is angry','Ignore the message completely','Check the surrounding words and situation'],a:3,e:'Emoji interpretation should use the surrounding language and context rather than the emoji alone.'}
-];
-let invI=0,invStarted=false,invAnswered=false;
-function startInvestigation(){invStarted=true;invI=0;renderInv()}
-function renderInv(){
- const d=invData[invI],sh=shuffleChoiceSet(d.o,d.a);invAnswered=false;
- document.getElementById('invTitle').textContent=d.title;document.getElementById('invCounter').textContent=(invI+1)+' / '+invData.length;
- document.getElementById('invProgress').style.width=((invI)/invData.length*100)+'%';
- document.getElementById('invArea').innerHTML=`<div class="message">${d.msg}</div><div style="font-weight:800;margin-bottom:12px">${d.q}</div><div class="choicegrid" id="invOpts"></div><div class="feedback" id="invFeed"></div><div class="actions"><button class="btn secondary" id="invNext" disabled>${invI===invData.length-1?'Finish Investigation':'Next'}</button></div>`;
- const box=document.getElementById('invOpts');
- sh.options.forEach((x,i)=>{const el=document.createElement('div');el.className='choice';el.textContent=x;el.onclick=()=>{if(invAnswered)return;invAnswered=true;[...box.children].forEach((c,j)=>{if(j===sh.correctIndex)c.classList.add('ok');if(j===i&&i!==sh.correctIndex)c.classList.add('no')});const ok=i===sh.correctIndex;document.getElementById('invFeed').className='feedback '+(ok?'good':'bad');document.getElementById('invFeed').textContent=(ok?'Correct! ':'Not quite. ')+d.e;addScore(10,ok,'investigate');document.getElementById('invNext').disabled=false};box.appendChild(el)});
- document.getElementById('invNext').onclick=()=>{if(invI<invData.length-1){invI++;renderInv()}else{go('results')}};
-}
-
-const cmpData=[
- ['Thanks.','Thanks 😊','Which version adds a warmer social tone without changing the basic act of thanking?',['Version A','Version B','No difference'],1,'The second version keeps the same words but adds a warmer tone.'],
- ['Please submit the report.','Please submit the report 🙂','You are writing a formal instruction to an unfamiliar recipient. Which version adds fewer emotional signals?',['Version A','Version B','No difference'],0,'The words-only version is more neutral and carries fewer extra emotional cues.'],
- ['We completed the task.','We completed the task 🎉','Which version communicates the same factual event?',['Version A','Version B','No difference'],2,'Both sentences state the same event; the emoji changes the tone, not the factual content.'],
- ['I’m sorry.','I’m sorry 😔','Which version makes regret more visible to the reader?',['Version A','Version B','No difference'],1,'😔 makes the emotional signal easier to notice.'],
- ['Okay.','Okay 👍','You want the shortest possible approval signal in an informal chat. Which version is more explicit?',['Version A','Version B','No difference'],1,'👍 provides an additional visible approval cue.'],
- ['We won!','We won! 🎉','Which version is more neutral in tone?',['Version A','Version B','No difference'],0,'The words-only version states the result without adding a celebration emoji.']
-];
-let cmpI=0,cmpStarted=false,cmpAnswered=false;
-function startCompare(){cmpStarted=true;cmpI=0;renderCmp()}
-function renderCmp(){cmpAnswered=false;const d=cmpData[cmpI],sh=shuffleChoiceSet(d[3],d[4]);document.getElementById('cmpA').textContent=d[0];document.getElementById('cmpB').textContent=d[1];document.getElementById('cmpQ').textContent=d[2];document.getElementById('cmpCount').textContent=`${cmpI+1} / ${cmpData.length}`;document.getElementById('cmpFeed').textContent='';document.getElementById('cmpNext').disabled=true;const box=document.getElementById('cmpOpts');box.innerHTML='';sh.options.forEach((x,i)=>{let e=document.createElement('div');e.className='choice';e.textContent=x;e.onclick=()=>{if(cmpAnswered)return;cmpAnswered=true;[...box.children].forEach((c,j)=>{if(j===sh.correctIndex)c.classList.add('ok');if(j===i&&i!==sh.correctIndex)c.classList.add('no')});const ok=i===sh.correctIndex;document.getElementById('cmpFeed').className='feedback '+(ok?'good':'bad');document.getElementById('cmpFeed').textContent=(ok?'Correct! ':'Not quite. ')+d[5];addScore(8,ok,'compare');document.getElementById('cmpNext').disabled=false};box.appendChild(e)});document.getElementById('cmpNext').onclick=()=>{if(cmpI<cmpData.length-1){cmpI++;renderCmp()}else{go('results')}}}
-
-const detData=[
- ['Context: Your teammate says, “I think we should use option 2.”<br>Reply: “Good idea 👍”',['disagreement','farewell','surprise','approval / agreement'],3,'Here, 👍 reinforces the approval already expressed by “Good idea”.'],
- ['Context: A teacher says, “Please check your answer again.”<br>Student: “Okay 🙂”',['anger','mild / cooperative tone','celebration','farewell'],1,'The words show compliance; 🙂 can make the reply feel milder or more friendly.'],
- ['Context: Friend: “I passed the exam!”<br>Reply: “No way! 😮”',['sadness','agreement','surprise','apology'],2,'“No way!” plus 😮 gives a strong surprise reaction.'],
- ['Context: You forgot to reply yesterday.<br>Message: “Sorry for the late reply 😔”',['regret / apology','celebration','approval','greeting'],0,'The wording and 😔 work together to communicate regret.'],
- ['Context: Class group: “Our team finished first! 🎉”<br>Question: What is the main social function of 🎉?',['farewell','confusion','warning','celebration'],3,'The emoji signals celebration in the context of finishing first.'],
- ['Context: You ask, “Can you send me the notes?”<br>Reply: “Sure 👍”',['sadness','agreement / willingness','surprise','farewell'],1,'“Sure” shows willingness and 👍 reinforces that approval.']
-];
-let detI=0,detStarted=false,detAnswered=false;
-function startDetective(){detStarted=true;detI=0;renderDet()}
-function renderDet(){detAnswered=false;const d=detData[detI],sh=shuffleChoiceSet(d[1],d[2]);document.getElementById('detMsg').innerHTML=d[0];document.getElementById('detCount').textContent=`${detI+1} / ${detData.length}`;document.getElementById('detFeed').textContent='';document.getElementById('detNext').disabled=true;const box=document.getElementById('detOpts');box.innerHTML='';sh.options.forEach((x,i)=>{let e=document.createElement('div');e.className='choice';e.textContent=x;e.onclick=()=>{if(detAnswered)return;detAnswered=true;[...box.children].forEach((c,j)=>{if(j===sh.correctIndex)c.classList.add('ok');if(j===i&&i!==sh.correctIndex)c.classList.add('no')});const ok=i===sh.correctIndex;document.getElementById('detFeed').className='feedback '+(ok?'good':'bad');document.getElementById('detFeed').textContent=(ok?'Correct! ':'Not quite. ')+d[3];addScore(10,ok,'detective');document.getElementById('detNext').disabled=false};box.appendChild(e)});document.getElementById('detNext').onclick=()=>{if(detI<detData.length-1){detI++;renderDet()}else{go('results')}}}
-
-// ===== RESEARCH MODE V5 =====
-const surveyData = [
- ['S1','“Thanks 😊”','Adding an emoji can change the tone of a message without changing its basic words.'],
- ['S2','“Okay 👍”','An emoji can sometimes make a short reply easier to interpret.'],
- ['S3','“See you 👋”','Emoji meaning depends partly on the words around it.'],
- ['S4','“Wow! 😮”','People may notice an emotional reaction faster when an emoji is included.'],
- ['S5','“Great job 🎉”','The same emoji can be interpreted somewhat differently in different situations.'],
- ['S6','“Sorry 😔”','Emoji can help make an intended tone more visible in a short English message.'],
- ['S7','“Thank you ❤️”','The relationship between the people can affect how an emoji is understood.'],
- ['S8','“Sure 🙂”','A smile emoji can make a short reply sound milder.'],
- ['S9','“Good luck 🍀”','An emoji can add a social meaning that is not stated by the words alone.'],
- ['S10','“I’m ready 💪”','Some emojis can strengthen a message of confidence or determination.'],
- ['S11','“Really? 😳”','Emoji can sometimes make a reaction look stronger than the words alone.'],
- ['S12','“No problem 😊”','An emoji can influence how friendly a message feels.'],
- ['S13','“Good night 🌙”','An emoji can support the topic of a message without replacing the words.'],
- ['S14','“Oops! 😅”','Readers can disagree about the exact tone of the same emoji message.'],
- ['S15','“Fine 🙂”','A message with an emoji can still remain ambiguous.'],
- ['S16','“Send it 👍”','Context is important when deciding what an emoji is doing in a sentence.'],
- ['S17','“You did it! 🎉”','An emoji can reinforce meaning that the words already suggest.'],
- ['S18','“Thanks.” / “Thanks 😊”','Comparing a message with and without an emoji can help study changes in perceived tone.'],
- ['S19','“Okay.” / “Okay 👍”','Adding an emoji always makes a message easier to understand.'],
- ['S20','“Sorry.” / “Sorry 😔”','Emoji are sometimes more useful for showing emotion than for adding new factual information.'],
- ['S21','“Sure.” / “Sure 🙂”','The same words can create a different impression when the emoji changes.'],
- ['S22','“We won!” / “We won! 🎉”','Emoji can influence how enthusiastic a message appears.'],
- ['S23','“Thank you ❤️”','Emoji have one fixed meaning that does not depend on context.'],
- ['S24','“Okay 🙂”','Two readers can understand the same emoji message in slightly different ways.'],
- ['S25','“Let’s go! 🚀”','Studying emoji in real message contexts can help explain how people communicate feelings in text.']
+const surveyData=[
+['S1','“Thanks 😊”','Adding an emoji can change the tone of a message without changing its basic words.'],
+['S2','“Okay 👍”','An emoji can sometimes make a short reply easier to interpret.'],
+['S3','“See you 👋”','Emoji meaning depends partly on the words around it.'],
+['S4','“Wow! 😮”','People may notice an emotional reaction faster when an emoji is included.'],
+['S5','“Great job 🎉”','The same emoji can be interpreted somewhat differently in different situations.'],
+['S6','“Sorry 😔”','Emoji can help make an intended tone more visible in a short English message.'],
+['S7','“Thank you ❤️”','The relationship between the people can affect how an emoji is understood.'],
+['S8','“Sure 🙂”','A smile emoji can make a short reply sound milder.'],
+['S9','“Good luck 🍀”','An emoji can add a social meaning that is not stated by the words alone.'],
+['S10','“I’m ready 💪”','Some emojis can strengthen a message of confidence or determination.'],
+['S11','“Really? 😳”','Emoji can sometimes make a reaction look stronger than the words alone.'],
+['S12','“No problem 😊”','An emoji can influence how friendly a message feels.'],
+['S13','“Good night 🌙”','An emoji can support the topic of a message without replacing the words.'],
+['S14','“Oops! 😅”','Readers can disagree about the exact tone of the same emoji message.'],
+['S15','“Fine 🙂”','A message with an emoji can still remain ambiguous.'],
+['S16','“Send it 👍”','Context is important when deciding what an emoji is doing in a sentence.'],
+['S17','“You did it! 🎉”','An emoji can reinforce meaning that the words already suggest.'],
+['S18','“Thanks.” / “Thanks 😊”','Comparing a message with and without an emoji can help study changes in perceived tone.'],
+['S19','“Okay.” / “Okay 👍”','Adding an emoji always makes a message easier to understand.'],
+['S20','“Sorry.” / “Sorry 😔”','Emoji are sometimes more useful for showing emotion than for adding new factual information.'],
+['S21','“Sure.” / “Sure 🙂”','The same words can create a different impression when the emoji changes.'],
+['S22','“We won!” / “We won! 🎉”','Emoji can influence how enthusiastic a message appears.'],
+['S23','“Thank you ❤️”','Emoji have one fixed meaning that does not depend on context.'],
+['S24','“Okay 🙂”','Two readers can understand the same emoji message in slightly different ways.'],
+['S25','“Let’s go! 🚀”','Studying emoji in real message contexts can help explain how people communicate feelings in text.']
 ];
 const surveyOptions=['Strongly agree','Agree','Neutral / unsure','Disagree','Strongly disagree'];
-
-const interpretationData = [
- ['I1','Friend: “I can’t join today.”<br>Reply: “No problem 😊”','What does 😊 most likely add?',['A stronger refusal','A friendlier / reassuring tone','A farewell signal','A new piece of factual information'],1],
- ['I2','“I guess that works 🙂”','What is the best description of the tone?',['Strong excitement','Formal warning','Mild / somewhat positive tone','Celebration'],2],
- ['I3','“You remembered my birthday! 🎉”','What is the emoji doing most clearly?',['Signalling celebration','Showing disagreement','Ending the conversation','Replacing the factual message'],0],
- ['I4','“Really? 😳 I didn’t see that coming.”','Which interpretation fits the whole message best?',['Calm agreement','Farewell','Gratitude','Strong surprise / embarrassment'],3],
- ['I5','“Could you send it again? 🙏”','Which reading is most supported by the words plus emoji?',['A request with a polite / pleading signal','An announcement of success','A farewell','A joke with no request'],0],
- ['I6','“Great idea 👍 Let’s do that.”','What social function is most likely?',['Apology','Approval / agreement','Surprise','Sadness'],1],
- ['I7','“Thanks ❤️”','Why should a careful reader consider context here?',['The emoji can never show emotion','The words are meaningless without emoji','The relationship can affect how strong the signal feels','❤️ always means romantic love'],2],
- ['I8','Teacher: “Please revise question 4.”<br>Student: “Sure 🙂”','What does the emoji most likely change?',['The requested task','The factual content','The deadline','The tone of the reply'],3],
- ['I9','“See you tomorrow 👋”','Which function is clearest?',['Farewell','Anger','Celebration','Confusion'],0],
- ['I10','“I’m ready 💪”','What does 💪 most likely contribute?',['Sadness','Determination / confidence','Greeting','Apology'],1],
- ['I11','“Oops! 😅 I sent the wrong file.”','What is the best interpretation of 😅?',['A light embarrassed reaction','A celebration signal','A farewell','Strong anger'],0],
- ['I12','“Fine 🙂” after being asked to wait','Why might this message still be ambiguous?',['🙂 has exactly one universal meaning','The words are too long','The reader may need more context to judge the tone','The emoji changes the factual event'],2],
- ['I13','“We won! 🎉”','What is NOT added by the emoji?',['A celebration signal','Positive emotional emphasis','The fact that the team won','A visible reaction'],2],
- ['I14','“Good luck 🍀 on your test!”','What does 🍀 most likely contribute?',['A luck / encouragement signal','A complaint','A farewell','A factual score'],0],
- ['I15','“Thanks.” / “Thanks 😊”','What is the most defensible conclusion?',['The emoji changes the factual event','The emoji can change perceived tone while the basic thanks remains','The two messages always mean opposite things','The words have no meaning without emoji'],1]
+const interpretationData=[
+['I1','Friend: “I can’t join today.”<br>Reply: “No problem 😊”','What does 😊 most likely add?',['A stronger refusal','A friendlier / reassuring tone','A farewell signal','A new piece of factual information'],1],
+['I2','“I guess that works 🙂”','What is the best description of the tone?',['Strong excitement','Formal warning','Mild / somewhat positive tone','Celebration'],2],
+['I3','“You remembered my birthday! 🎉”','What is the emoji doing most clearly?',['Signalling celebration','Showing disagreement','Ending the conversation','Replacing the factual message'],0],
+['I4','“Really? 😳 I didn’t see that coming.”','Which interpretation fits the whole message best?',['Calm agreement','Farewell','Gratitude','Strong surprise / embarrassment'],3],
+['I5','“Could you send it again? 🙏”','Which reading is most supported by the words plus emoji?',['A request with a polite / pleading signal','An announcement of success','A farewell','A joke with no request'],0],
+['I6','“Great idea 👍 Let’s do that.”','What social function is most likely?',['Apology','Approval / agreement','Surprise','Sadness'],1],
+['I7','“Thanks ❤️”','Why should a careful reader consider context here?',['The emoji can never show emotion','The words are meaningless without emoji','The relationship can affect how strong the signal feels','❤️ always means romantic love'],2],
+['I8','Teacher: “Please revise question 4.”<br>Student: “Sure 🙂”','What does the emoji most likely change?',['The requested task','The factual content','The deadline','The tone of the reply'],3],
+['I9','“See you tomorrow 👋”','Which function is clearest?',['Farewell','Anger','Celebration','Confusion'],0],
+['I10','“I’m ready 💪”','What does 💪 most likely contribute?',['Sadness','Determination / confidence','Greeting','Apology'],1],
+['I11','“Oops! 😅 I sent the wrong file.”','What is the best interpretation of 😅?',['A light embarrassed reaction','A celebration signal','A farewell','Strong anger'],0],
+['I12','“Fine 🙂” after being asked to wait','Why might this message still be ambiguous?',['🙂 has exactly one universal meaning','The words are too long','The reader may need more context to judge the tone','The emoji changes the factual event'],2],
+['I13','“We won! 🎉”','What is NOT added by the emoji?',['A celebration signal','Positive emotional emphasis','The fact that the team won','A visible reaction'],2],
+['I14','“Good luck 🍀 on your test!”','What does 🍀 most likely contribute?',['A luck / encouragement signal','A complaint','A farewell','A factual score'],0],
+['I15','“Thanks.” / “Thanks 😊”','What is the most defensible conclusion?',['The emoji changes the factual event','The emoji can change perceived tone while the basic thanks remains','The two messages always mean opposite things','The words have no meaning without emoji'],1]
 ];
-
-const experimentData = [
- ['E1','Thanks.','Thanks 😊','Which version adds a warmer tone?',['Version A','Version B','No difference'],1],
- ['E2','Please submit the report.','Please submit the report 🙂','Which version is more neutral for a formal instruction?',['Version A','Version B','No difference'],0],
- ['E3','We completed the task.','We completed the task 🎉','Which version keeps the same factual information?',['Version A','Version B','No difference'],2],
- ['E4','I’m sorry.','I’m sorry 😔','Which version makes regret more visible?',['Version A','Version B','No difference'],1],
- ['E5','Okay.','Okay 👍','Which version gives a clearer approval signal in an informal chat?',['Version A','Version B','No difference'],1],
- ['E6','We won!','We won! 🎉','Which version is more neutral in tone?',['Version A','Version B','No difference'],0],
- ['E7','Good luck.','Good luck 🍀','Which version adds a visible supportive signal?',['Version A','Version B','No difference'],1],
- ['E8','I’m ready.','I’m ready 💪','Which version keeps the same basic statement while adding emotional emphasis?',['Version A','Version B','No difference'],2],
- ['E9','See you.','See you 👋','Which version gives the clearest farewell cue?',['Version A','Version B','No difference'],1],
- ['E10','Thanks.','Thanks 😊','Which version is less emotionally marked?',['Version A','Version B','No difference'],0]
+const experimentData=[
+['E1','Thanks.','Thanks 😊','Which version adds a warmer tone?',['Version A','Version B','No difference'],1],
+['E2','Please submit the report.','Please submit the report 🙂','Which version is more neutral for a formal instruction?',['Version A','Version B','No difference'],0],
+['E3','We completed the task.','We completed the task 🎉','Which version keeps the same factual information?',['Version A','Version B','No difference'],2],
+['E4','I’m sorry.','I’m sorry 😔','Which version makes regret more visible?',['Version A','Version B','No difference'],1],
+['E5','Okay.','Okay 👍','Which version gives a clearer approval signal in an informal chat?',['Version A','Version B','No difference'],1],
+['E6','We won!','We won! 🎉','Which version is more neutral in tone?',['Version A','Version B','No difference'],0],
+['E7','Good luck.','Good luck 🍀','Which version adds a visible supportive signal?',['Version A','Version B','No difference'],1],
+['E8','I’m ready.','I’m ready 💪','Which version keeps the same basic statement while adding emotional emphasis?',['Version A','Version B','No difference'],2],
+['E9','See you.','See you 👋','Which version gives the clearest farewell cue?',['Version A','Version B','No difference'],1],
+['E10','Thanks.','Thanks 😊','Which version is less emotionally marked?',['Version A','Version B','No difference'],0]
 ];
+const LS_CURRENT='emoji_research_current_v6',LS_HISTORY='emoji_research_history_v6';
+let session=null;
+function freshSession(code){return{code,startedAt:new Date().toISOString(),finishedAt:null,survey:{i:0,answers:[]},interpret:{i:0,answers:[],correct:0},experiment:{i:0,answers:[]},diary:[]};}
+function esc(s){return String(s??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[m]));}
+function saveSession(){if(session)localStorage.setItem(LS_CURRENT,JSON.stringify(session));updateUI();}
+function load(){try{session=JSON.parse(localStorage.getItem(LS_CURRENT)||'null')}catch{session=null}if(session){document.getElementById('studentCode').value=session.code;openWorkspace();}updateUI();}
+function history(){try{return JSON.parse(localStorage.getItem(LS_HISTORY)||'[]')}catch{return[]}}
+function openWorkspace(){document.getElementById('researchWorkspace').classList.remove('hidden');document.getElementById('currentStudentLabel').textContent=session.code;renderSurvey();renderInterpret();renderExperiment();buildDiary();updateLive();}
+function startSession(){const code=document.getElementById('studentCode').value.trim();if(!code){alert('Please enter an anonymous student code.');return}const existing=history().find(x=>x.code===code);if(session && session.code===code){openWorkspace();document.getElementById('sessionStatus').textContent='Continuing current student '+code+'.';return}if(existing){const choice=confirm('A saved result already exists for '+code+'. Click OK to start a new session with the same code, or Cancel to keep the saved result untouched.');if(!choice)return}session=freshSession(code);saveSession();openWorkspace();document.getElementById('sessionStatus').textContent='Current student: '+code;go('research');}
+function go(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===id));if(id==='results')renderResults();if(id==='investigate')playStartInv();if(id==='compare')playStartCmp();if(id==='detective')playStartDet();window.scrollTo({top:0,behavior:'smooth'});}
+document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>go(b.dataset.view));
+document.querySelectorAll('.tab').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.getElementById(btn.dataset.panel).classList.add('active');});
+function renderSurvey(){if(!session)return;const d=surveyData[session.survey.i];document.getElementById('sMsg').textContent=d[1];document.getElementById('sQuestion').textContent=d[2];document.getElementById('sCount').textContent=`${session.survey.i+1} / ${surveyData.length}`;document.getElementById('sProgress').style.width=(session.survey.i/surveyData.length*100)+'%';const box=document.getElementById('sOpts');box.innerHTML='';const prev=session.survey.answers.find(a=>a.id===d[0]);surveyOptions.forEach(x=>{const e=document.createElement('div');e.className='choice';e.textContent=x;if(prev&&prev.response===x)e.classList.add('sel');e.onclick=()=>{box.querySelectorAll('.choice').forEach(c=>c.classList.remove('sel'));e.classList.add('sel');document.getElementById('sFeed').textContent='Response selected. Click “Record & Next” to save it.';document.getElementById('sFeed').className='feedback good';document.getElementById('sNext').disabled=false};box.appendChild(e)});document.getElementById('sNext').disabled=!prev;document.getElementById('sNext').textContent=session.survey.i===surveyData.length-1?'Record & Finish':'Record & Next';document.getElementById('sNext').onclick=recordSurvey;}
+function recordSurvey(){const picked=document.querySelector('#sOpts .choice.sel');if(!picked)return;const d=surveyData[session.survey.i];const idx=session.survey.answers.findIndex(a=>a.id===d[0]);const item={id:d[0],message:d[1],question:d[2],response:picked.textContent};if(idx>=0)session.survey.answers[idx]=item;else session.survey.answers.push(item);if(session.survey.i<surveyData.length-1){session.survey.i++;renderSurvey()}else{document.getElementById('sFeed').textContent='Questionnaire complete.';document.getElementById('sNext').disabled=true;}saveSession();}
+function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function renderInterpret(){if(!session)return;const d=interpretationData[session.interpret.i];document.getElementById('iMsg').innerHTML=d[1];document.getElementById('iQuestion').textContent=d[2];document.getElementById('iCount').textContent=`${session.interpret.i+1} / ${interpretationData.length}`;document.getElementById('iProgress').style.width=(session.interpret.i/interpretationData.length*100)+'%';const box=document.getElementById('iOpts');box.innerHTML='';const prev=session.interpret.answers.find(a=>a.id===d[0]);const choices=d[3].map((text,idx)=>({text,idx}));shuffle(choices).forEach(obj=>{const e=document.createElement('div');e.className='choice';e.textContent=obj.text;if(prev&&prev.choiceIndex===obj.idx)e.classList.add(prev.correct?'ok':'no');e.onclick=()=>{if(box.querySelector('.answered'))return;box.querySelectorAll('.choice').forEach(c=>c.classList.remove('answered'));e.classList.add('answered','sel');const ok=obj.idx===d[4];box.querySelectorAll('.choice').forEach((c)=>{if(c.textContent===d[3][d[4]])c.classList.add('ok')});if(!ok)e.classList.add('no');document.getElementById('iFeed').className='feedback '+(ok?'good':'bad');document.getElementById('iFeed').textContent=ok?'Correct — 1 point.':'Response recorded — target answer is highlighted.';document.getElementById('iNext').disabled=false;e.dataset.choiceIndex=obj.idx;e.dataset.correct=ok?'1':'0'};if(prev&&prev.choiceIndex===obj.idx)e.dataset.choiceIndex=obj.idx;box.appendChild(e)});document.getElementById('iNext').disabled=!prev;document.getElementById('iNext').textContent=session.interpret.i===interpretationData.length-1?'Record & Finish':'Record & Next';document.getElementById('iNext').onclick=recordInterpret;}
+function recordInterpret(){const selected=document.querySelector('#iOpts .choice.sel');if(!selected)return;const d=interpretationData[session.interpret.i];const idx=Number(selected.dataset.choiceIndex);const ok=idx===d[4];const item={id:d[0],message:d[1],question:d[2],response:d[3][idx],choiceIndex:idx,correct:ok};const oldIndex=session.interpret.answers.findIndex(a=>a.id===d[0]);if(oldIndex>=0){if(session.interpret.answers[oldIndex].correct)session.interpret.correct--;session.interpret.answers[oldIndex]=item}else session.interpret.answers.push(item);session.interpret.correct=session.interpret.answers.filter(a=>a.correct).length;if(session.interpret.i<interpretationData.length-1){session.interpret.i++;renderInterpret()}else{document.getElementById('iFeed').textContent='Interpretation test complete.';document.getElementById('iNext').disabled=true;}saveSession();}
+function renderExperiment(){if(!session)return;const d=experimentData[session.experiment.i];document.getElementById('eTitle').textContent=d[0]+' — Same message, different format';document.getElementById('eA').textContent=d[1];document.getElementById('eB').textContent=d[2];document.getElementById('eQuestion').textContent=d[3];document.getElementById('eCount').textContent=`${session.experiment.i+1} / ${experimentData.length}`;document.getElementById('eProgress').style.width=(session.experiment.i/experimentData.length*100)+'%';const box=document.getElementById('eOpts');box.innerHTML='';const prev=session.experiment.answers.find(a=>a.id===d[0]);shuffle(d[4].map((text,idx)=>({text,idx}))).forEach(obj=>{const e=document.createElement('div');e.className='choice';e.textContent=obj.text;if(prev&&prev.choiceIndex===obj.idx)e.classList.add('sel');e.onclick=()=>{box.querySelectorAll('.choice').forEach(c=>c.classList.remove('sel'));e.classList.add('sel');e.dataset.choiceIndex=obj.idx;document.getElementById('eFeed').className='feedback good';document.getElementById('eFeed').textContent='Response selected. Click “Record & Next” to save it.';document.getElementById('eNext').disabled=false};if(prev&&prev.choiceIndex===obj.idx)e.dataset.choiceIndex=obj.idx;box.appendChild(e)});document.getElementById('eNext').disabled=!prev;document.getElementById('eNext').textContent=session.experiment.i===experimentData.length-1?'Record & Finish':'Record & Next';document.getElementById('eNext').onclick=recordExperiment;}
+function recordExperiment(){const selected=document.querySelector('#eOpts .choice.sel');if(!selected)return;const d=experimentData[session.experiment.i],idx=Number(selected.dataset.choiceIndex);const item={id:d[0],messageA:d[1],messageB:d[2],question:d[3],response:d[4][idx],choiceIndex:idx};const old=session.experiment.answers.findIndex(a=>a.id===d[0]);if(old>=0)session.experiment.answers[old]=item;else session.experiment.answers.push(item);if(session.experiment.i<experimentData.length-1){session.experiment.i++;renderExperiment()}else{document.getElementById('eFeed').textContent='Experiment complete.';document.getElementById('eNext').disabled=true;}saveSession();}
+function buildDiary(){if(!session)return;const box=document.getElementById('diaryRows');box.innerHTML='';for(let i=1;i<=7;i++){const saved=session.diary.find(x=>x.day===i)||{};box.insertAdjacentHTML('beforeend',`<div class="diary-grid" style="margin-bottom:8px"><div><span class="badge">Day ${i}</span></div><input id="dmsg${i}" placeholder="Example: See you 👋" value="${esc(saved.message||'')}"><input id="dfn${i}" placeholder="farewell" value="${esc(saved.function||'')}"></div>`)}}
+function saveDiary(){session.diary=[];for(let i=1;i<=7;i++){const message=document.getElementById('dmsg'+i).value.trim(),fn=document.getElementById('dfn'+i).value.trim();if(message||fn)session.diary.push({day:i,message,function:fn})}document.getElementById('diaryFeed').className='feedback good';document.getElementById('diaryFeed').textContent=`Saved ${session.diary.length} diary day(s).`;saveSession();}
+function clearDiary(){session.diary=[];buildDiary();document.getElementById('diaryFeed').textContent='';saveSession();}
+function completedStats(s){return{survey:s.survey.answers.length,interpret:s.interpret.answers.length,experiment:s.experiment.answers.length,diary:s.diary.length,score:s.interpret.answers.filter(a=>a.correct).length,pct:s.interpret.answers.length?Math.round(s.interpret.answers.filter(a=>a.correct).length/s.interpret.answers.length*100):0}}
+function updateLive(){if(!session)return;const st=completedStats(session);document.getElementById('liveSurvey').textContent=`${st.survey} / ${surveyData.length}`;document.getElementById('liveInterpret').textContent=`${st.interpret} / ${interpretationData.length}`;document.getElementById('liveExperiment').textContent=`${st.experiment} / ${experimentData.length}`;document.getElementById('liveDiary').textContent=`${st.diary} / 7`;document.getElementById('liveScore').textContent=`${st.score} / ${interpretationData.length}`;document.getElementById('livePct').textContent=st.pct+'%';const done=surveyData.length+interpretationData.length+experimentData.length+7;const doneNow=st.survey+st.interpret+st.experiment+st.diary;document.getElementById('overallProgress').style.width=(done?doneNow/done*100:0)+'%';document.getElementById('overallProgressText').textContent=Math.round(doneNow/done*100)+'% complete';document.getElementById('currentStudentLabel').textContent=session.code;}
+function hasMinimumToSave(){return session&&session.code&&session.survey.answers.length>0}
+function finishStudent(){if(!session){alert('Start a student session first.');return}if(!hasMinimumToSave()){alert('Please record at least one research answer before saving the student result.');return}const st=completedStats(session);session.finishedAt=new Date().toISOString();const h=history().filter(x=>x.id!==session.id&&!(x.code===session.code&&x.finishedAt===session.finishedAt));session.id=session.id||('R'+Date.now()+Math.random().toString(36).slice(2,7));h.push(JSON.parse(JSON.stringify(session)));localStorage.setItem(LS_HISTORY,JSON.stringify(h));localStorage.removeItem(LS_CURRENT);document.getElementById('finishFeed').className='feedback good';document.getElementById('finishFeed').textContent=`Saved ${session.code}: ${st.score}/${interpretationData.length} interpretation score.`;session=null;document.getElementById('researchWorkspace').classList.add('hidden');document.getElementById('studentCode').value='';updateUI();go('results');}
+function updateUI(){const h=history();document.getElementById('savedCount').textContent=h.length;document.getElementById('currentScore').textContent=session?`${completedStats(session).score} / ${interpretationData.length}`:'0 / 15';if(session)updateLive();}
+function renderResults(){const h=history().slice().sort((a,b)=>(b.finishedAt||'').localeCompare(a.finishedAt||''));document.getElementById('resultsCountText').textContent=`${h.length} student${h.length===1?'':'s'} saved.`;const list=document.getElementById('resultsList');if(!h.length){list.innerHTML='<div class="card note">No saved students yet. Start a student from Research Mode, record answers, and click “Finish & Save Student Result”.</div>';return}list.innerHTML='';h.forEach((s,idx)=>{const st=completedStats(s);const el=document.createElement('div');el.className='result-card';el.innerHTML=`<div class="result-head"><div><div class="student-code">${esc(s.code)}</div><div class="small">Student record #${h.length-idx} • ${s.finishedAt?new Date(s.finishedAt).toLocaleString():'In progress'}</div></div><div class="scorebox"><b>${st.score}/${interpretationData.length}</b><span>interpretation score</span></div></div><div class="result-meta"><div class="meta"><b>${st.survey}/${surveyData.length}</b><span>questionnaire answers</span></div><div class="meta"><b>${st.interpret}/${interpretationData.length}</b><span>interpretation answered</span></div><div class="meta"><b>${st.experiment}/${experimentData.length}</b><span>experiment choices</span></div><div class="meta"><b>${st.diary}/7</b><span>diary days</span></div><div class="meta"><b>${st.pct}%</b><span>interpretation accuracy</span></div></div><div class="actions"><button class="btn secondary" onclick="toggleDetails('${s.id}')">👁 View full answers</button><span class="small">All answers belong only to ${esc(s.code)}.</span></div><div class="details" id="detail-${s.id}"></div>`;list.appendChild(el);});}
+function toggleDetails(id){const s=history().find(x=>x.id===id);if(!s)return;const d=document.getElementById('detail-'+id);if(d.classList.contains('open')){d.classList.remove('open');return}let html='';html+='<div class="ans-section"><h4>📋 Questionnaire responses</h4>';if(s.survey.answers.length){s.survey.answers.forEach(a=>html+=`<div class="answer-row"><div class="ans-id">${a.id}</div><div class="ans-text"><b>${esc(a.message)}</b><br><span class="small">${esc(a.question)}</span></div><span class="correct-tag na">No score</span></div>`)}else html+='<div class="small">No questionnaire responses.</div>';html+='</div>';html+='<div class="ans-section"><h4>🔍 Interpretation answers</h4>';if(s.interpret.answers.length){s.interpret.answers.forEach(a=>html+=`<div class="answer-row"><div class="ans-id">${a.id}</div><div class="ans-text"><b>${a.message}</b><br><span class="small">${esc(a.question)}</span><br><span>Your answer: <b>${esc(a.response)}</b></span></div><span class="correct-tag ${a.correct?'yes':'no'}">${a.correct?'✓ +1 point':'✗ 0 points'}</span></div>`)}else html+='<div class="small">No interpretation answers.</div>';html+='</div>';html+='<div class="ans-section"><h4>🔄 Experiment choices</h4>';if(s.experiment.answers.length){s.experiment.answers.forEach(a=>html+=`<div class="answer-row"><div class="ans-id">${a.id}</div><div class="ans-text"><b>${esc(a.messageA)}</b> → <b>${esc(a.messageB)}</b><br><span class="small">${esc(a.question)}</span><br><span>Choice: <b>${esc(a.response)}</b></span></div><span class="correct-tag na">Research data</span></div>`)}else html+='<div class="small">No experiment choices.</div>';html+='</div>';html+='<div class="ans-section"><h4>📅 Diary</h4>';if(s.diary.length){s.diary.forEach(a=>html+=`<div class="answer-row"><div class="ans-id">Day ${a.day}</div><div class="ans-text"><b>${esc(a.message)}</b><br><span>Function: ${esc(a.function)}</span></div><span class="correct-tag na">Research data</span></div>`)}else html+='<div class="small">No diary entries.</div>';html+='</div>';html+=`<div class="success" style="margin-top:15px"><b>Final research score:</b> ${completedStats(s).score}/${interpretationData.length} (${completedStats(s).pct}%).</div>`;d.innerHTML=html;d.classList.add('open');}
+function exportCSV(){const h=history();if(!h.length){alert('No saved students.');return}const rows=[['Student Code','Finished At','Module','Item','Prompt / Message','Response','Correct','Point']];h.forEach(s=>{s.survey.answers.forEach(a=>rows.push([s.code,s.finishedAt,'Questionnaire',a.id,a.message+' | '+a.question,a.response,'','']));s.interpret.answers.forEach(a=>rows.push([s.code,s.finishedAt,'Interpretation',a.id,a.message+' | '+a.question,a.response,a.correct?'Yes':'No',a.correct?'1':'0']));s.experiment.answers.forEach(a=>rows.push([s.code,s.finishedAt,'Experiment',a.id,a.messageA+' | '+a.messageB+' | '+a.question,a.response,'','']));s.diary.forEach(a=>rows.push([s.code,s.finishedAt,'Diary','Day '+a.day,a.message,a.function,'','']));});const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='emoji_research_students.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),500);}
+function reloadResults(){renderResults();updateUI();}
+function deleteAllResults(){if(!history().length)return;if(!confirm('Delete all saved student results from this browser? This cannot be undone.'))return;localStorage.removeItem(LS_HISTORY);renderResults();updateUI();}
+function sessionInit(){let raw=null;try{raw=localStorage.getItem(LS_CURRENT)}catch{}if(raw){try{session=JSON.parse(raw)}catch{session=null}}load();}
+sessionInit();
 
-function wireResearchTabs(){
- document.querySelectorAll('.rtab').forEach(btn=>{
-  btn.onclick=()=>{
-   document.querySelectorAll('.rtab').forEach(b=>b.classList.remove('active'));
-   document.querySelectorAll('.rpanel').forEach(p=>p.classList.remove('active'));
-   btn.classList.add('active');
-   document.getElementById(btn.dataset.rpanel).classList.add('active');
-   if(btn.dataset.rpanel==='rSummary') updateResearchSummary();
-  };
- });
-}
-wireResearchTabs();
+/* =========================================================
+   NON-RESEARCH SECTIONS ONLY
+   These functions/data never write to the Research/Results dataset.
+   ========================================================= */
+const playInvData=[
+ {title:'Level 1 — Emoji Meaning',msg:'“Thank you 😊”',q:'What does 😊 most likely add?',o:['friendly / happy tone','anger','farewell','a question'],a:0,e:'😊 often adds a friendly or happy tone.'},
+ {title:'Level 1 — Emoji Meaning',msg:'“See you 👋”',q:'What does 👋 most likely signal?',o:['farewell','sadness','agreement','surprise'],a:0,e:'👋 can work as a farewell signal.'},
+ {title:'Level 2 — Word or Emoji?',msg:'“Okay 👍”',q:'Can 👍 communicate “I agree” in this short chat?',o:['Yes, often','No, never','Only in a formal report','It means goodbye'],a:0,e:'In informal short messages, 👍 can communicate agreement.'},
+ {title:'Level 2 — Word or Emoji?',msg:'“Thanks 😊”',q:'Does 😊 literally mean “thanks”?',o:['No — it mainly adds tone','Yes — always','It means goodbye','It replaces the entire sentence'],a:0,e:'The words carry the basic meaning; 😊 adds emotional tone.'},
+ {title:'Level 3 — Function',msg:'“We won! 🎉”',q:'What does 🎉 contribute?',o:['celebration','anger','farewell','confusion'],a:0,e:'🎉 is strongly associated with celebration.'},
+ {title:'Level 3 — Function',msg:'“Wow! 😮”',q:'What reaction is signalled?',o:['surprise','gratitude','agreement','sadness'],a:0,e:'😮 commonly signals surprise.'},
+ {title:'Level 4 — Context',msg:'“I’m sorry 😔”',q:'In this context, 😔 most likely supports…',o:['sadness / regret','celebration','approval','greeting'],a:0,e:'The words and emoji together suggest sadness or regret.'},
+ {title:'Level 4 — Context',msg:'“Great idea 👍”',q:'Here, 👍 most likely means…',o:['approval','farewell','sadness','surprise'],a:0,e:'The context makes approval the most likely interpretation.'}
+];
+const playCmpData=[
+ ['Thanks.','Thanks 😊','Which version feels warmer?',['Version B','Version A','No difference'],0,'😊 can add a friendlier tone.'],
+ ['Okay.','Okay 👍','Which version gives a clearer approval signal?',['Version B','Version A','No difference'],0,'👍 can make agreement more explicit.'],
+ ['See you.','See you 👋','Which version gives a clearer farewell signal?',['Version B','Version A','No difference'],0,'👋 works as a farewell signal.'],
+ ['Wow!','Wow! 😮','Which version shows surprise more visibly?',['Version B','Version A','No difference'],0,'😮 makes the reaction more explicit.'],
+ ['I’m sorry.','I’m sorry 😔','Which version gives a stronger sadness/regret signal?',['Version B','Version A','No difference'],0,'😔 can strengthen the emotional signal.'],
+ ['We won!','We won! 🎉','Which version gives a clearer celebration signal?',['Version B','Version A','No difference'],0,'🎉 adds a celebration signal.']
+];
+const playDetData=[
+ ['“Okay 👍”',['agreement / approval','sadness','farewell','surprise'],0,'The words “Okay” plus 👍 strongly suggest approval.'],
+ ['“See you 👋”',['farewell','anger','celebration','sadness'],0,'👋 supports the farewell context.'],
+ ['“Wow! 😮”',['surprise','gratitude','agreement','sadness'],0,'“Wow!” creates a clear surprise context.'],
+ ['“Thank you 😊”',['friendly / happy tone','anger','farewell','confusion'],0,'😊 usually makes the thanks feel warmer.'],
+ ['“I’m sorry 😔”',['sadness / regret','celebration','approval','greeting'],0,'The words and 😔 work together to show regret or sadness.'],
+ ['“We won! 🎉”',['celebration','farewell','apology','disagreement'],0,'Winning plus 🎉 creates a celebration context.']
+];
+let playScore=0,playCorrect=0,playStreak=0,playInvI=0,playInvAnswered=false,playCmpI=0,playCmpAnswered=false,playDetI=0,playDetAnswered=false;
+function playShuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function playAddScore(n,ok){if(ok){playScore+=n;playCorrect++;playStreak++}else playStreak=0;playUpdateHeader();}
+function playUpdateHeader(){const s=document.getElementById('score'),st=document.getElementById('streak');if(s)s.textContent=playScore;if(st)st.textContent=playStreak;}
+function playRenderInv(){const d=playInvData[playInvI];playInvAnswered=false;document.getElementById('invTitle').textContent=d.title;document.getElementById('invCounter').textContent=(playInvI+1)+' / '+playInvData.length;document.getElementById('invProgress').style.width=(playInvI/playInvData.length*100)+'%';document.getElementById('invArea').innerHTML=`<div class="message">${d.msg}</div><div style="font-weight:800;margin-bottom:12px">${d.q}</div><div class="choicegrid" id="invOpts"></div><div class="feedback" id="invFeed"></div><div class="actions"><button class="btn secondary" id="invNext" disabled>${playInvI===playInvData.length-1?'Finish Investigation':'Next'}</button></div>`;const box=document.getElementById('invOpts');playShuffle(d.o.map((text,idx)=>({text,idx}))).forEach(obj=>{const el=document.createElement('div');el.className='choice';el.textContent=obj.text;el.onclick=()=>{if(playInvAnswered)return;playInvAnswered=true;box.querySelectorAll('.choice').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');box.querySelectorAll('.choice').forEach(c=>{if(c.textContent===d.o[d.a])c.classList.add('ok')});const ok=obj.idx===d.a;if(!ok)el.classList.add('no');document.getElementById('invFeed').className='feedback '+(ok?'good':'bad');document.getElementById('invFeed').textContent=(ok?'Correct! ':'Not quite. ')+d.e;playAddScore(10,ok);document.getElementById('invNext').disabled=false;};box.appendChild(el)});document.getElementById('invNext').onclick=()=>{if(playInvI<playInvData.length-1){playInvI++;playRenderInv()}else{playRenderPlayResults();}}}
+function playStartInv(){playInvI=0;playRenderInv();playUpdateHeader();}
+function playRenderCmp(){playCmpAnswered=false;const d=playCmpData[playCmpI];document.getElementById('cmpA').textContent=d[0];document.getElementById('cmpB').textContent=d[1];document.getElementById('cmpQ').textContent=d[2];document.getElementById('cmpCount').textContent=`${playCmpI+1} / ${playCmpData.length}`;document.getElementById('cmpFeed').textContent='';document.getElementById('cmpNext').disabled=true;const box=document.getElementById('cmpOpts');box.innerHTML='';playShuffle(d[3].map((text,idx)=>({text,idx}))).forEach(obj=>{const e=document.createElement('div');e.className='choice';e.textContent=obj.text;e.onclick=()=>{if(playCmpAnswered)return;playCmpAnswered=true;box.querySelectorAll('.choice').forEach(c=>{if(c.textContent===d[3][d[4]])c.classList.add('ok')});const ok=obj.idx===d[4];if(!ok)e.classList.add('no');e.classList.add('sel');document.getElementById('cmpFeed').className='feedback '+(ok?'good':'bad');document.getElementById('cmpFeed').textContent=(ok?'Correct! ':'Not quite. ')+d[5];playAddScore(8,ok);document.getElementById('cmpNext').disabled=false;};box.appendChild(e)});document.getElementById('cmpNext').onclick=()=>{if(playCmpI<playCmpData.length-1){playCmpI++;playRenderCmp()}else{playRenderPlayResults();}}}
+function playStartCmp(){playCmpI=0;playRenderCmp();playUpdateHeader();}
+function playRenderDet(){playDetAnswered=false;const d=playDetData[playDetI];document.getElementById('detMsg').textContent=d[0];document.getElementById('detCount').textContent=`${playDetI+1} / ${playDetData.length}`;document.getElementById('detFeed').textContent='';document.getElementById('detNext').disabled=true;const box=document.getElementById('detOpts');box.innerHTML='';playShuffle(d[1].map((text,idx)=>({text,idx}))).forEach(obj=>{const e=document.createElement('div');e.className='choice';e.textContent=obj.text;e.onclick=()=>{if(playDetAnswered)return;playDetAnswered=true;box.querySelectorAll('.choice').forEach(c=>{if(c.textContent===d[1][d[2]])c.classList.add('ok')});const ok=obj.idx===d[2];if(!ok)e.classList.add('no');e.classList.add('sel');document.getElementById('detFeed').className='feedback '+(ok?'good':'bad');document.getElementById('detFeed').textContent=(ok?'Correct! ':'Not quite. ')+d[3];playAddScore(10,ok);document.getElementById('detNext').disabled=false;};box.appendChild(e)});document.getElementById('detNext').onclick=()=>{if(playDetI<playDetData.length-1){playDetI++;playRenderDet()}else{playRenderPlayResults();}}}
+function playStartDet(){playDetI=0;playRenderDet();playUpdateHeader();}
+function analyseCreationPlay(){const t=document.getElementById('createText').value.trim(),f=document.getElementById('createFeed');if(!t){f.className='feedback bad';f.textContent='Please write a short English message first.';return}const words=t.split(/\s+/).filter(Boolean).length;if(words<3||words>10){f.className='feedback bad';f.textContent='Try a message of 3–10 words so the meaning stays easy to analyse.';return}f.className='feedback good';f.textContent='Good research example. Your message contains '+words+' words and uses '+document.getElementById('createEmoji').value+'.';playAddScore(15,true)}
+function clearCreationPlay(){document.getElementById('createText').value='';document.getElementById('previewMsg').textContent='Your message will appear here.';document.getElementById('createFeed').textContent=''}
+function previewCreationPlay(){const t=document.getElementById('createText').value.trim(),e=document.getElementById('createEmoji').value;document.getElementById('previewMsg').textContent=t?(t+' '+e):'Your message will appear here.'}
+function playRenderPlayResults(){const el=document.getElementById('playResultsCard');if(!el)return;const total=playCorrect,level=playScore>=150?'Emoji Master':playScore>=90?'Emoji Expert':playScore>=45?'Message Detective':'Starter';document.getElementById('playResScore').textContent=playScore;document.getElementById('playResCorrect').textContent=total;document.getElementById('playResBadge').textContent=level;go('playResults');}
+function resetPlay(){playScore=0;playCorrect=0;playStreak=0;playInvI=0;playCmpI=0;playDetI=0;playUpdateHeader();go('home');}
+(function wirePlay(){document.querySelectorAll('#createText,#createEmoji').forEach(el=>el.addEventListener(el.id==='createText'?'input':'change',previewCreationPlay));playUpdateHeader();})();
 
-function renderSurvey(){
- const d=surveyData[research.survey.i], p=research.survey.i/surveyData.length*100;
- document.getElementById('rSurveyMsg').textContent=d[1];
- document.getElementById('rSurveyQuestion').textContent=d[2];
- document.getElementById('rSurveyCount').textContent=`${research.survey.i+1} / ${surveyData.length}`;
- document.getElementById('rSurveyProgress').style.width=p+'%';
- const feed=document.getElementById('rSurveyFeed'); feed.textContent='';
- const next=document.getElementById('rSurveyNext'); next.disabled=true;
- const box=document.getElementById('rSurveyOpts'); box.innerHTML='';
- surveyOptions.forEach(x=>{const e=document.createElement('div');e.className='choice';e.textContent=x;e.onclick=()=>{box.querySelectorAll('.choice').forEach(c=>c.classList.remove('sel'));e.classList.add('sel');feed.className='feedback good';feed.textContent='Response selected. Click “Record & Next” to save it.';next.disabled=false};box.appendChild(e)});
- next.onclick=recordSurvey;
-}
-function recordSurvey(){
- const picked=document.querySelector('#rSurveyOpts .choice.sel'); if(!picked) return;
- const d=surveyData[research.survey.i], chosen=picked.textContent;
- research.survey.answers.push({id:d[0],response:chosen});
- if(!(chosen in research.survey.stats)) research.survey.stats[chosen]=0;
- research.survey.stats[chosen]++;
- if(research.survey.i<surveyData.length-1){research.survey.i++;renderSurvey()}else{
-  document.getElementById('rSurveyFeed').className='feedback good';
-  document.getElementById('rSurveyFeed').textContent='Questionnaire complete. Open Summary to review this session.';
-  document.getElementById('rSurveyNext').disabled=true;
- }
- updateResearchSummary();
- saveLocalSession();
-}
-
-function renderInterpret(){
- const d=interpretationData[research.interpret.i],sh=shuffleChoiceSet(d[3],d[4]),p=research.interpret.i/interpretationData.length*100;
- document.getElementById('rIntMsg').innerHTML=d[1];
- document.getElementById('rIntQuestion').textContent=d[2];
- document.getElementById('rIntCount').textContent=`${research.interpret.i+1} / ${interpretationData.length}`;
- document.getElementById('rIntProgress').style.width=p+'%';
- document.getElementById('rIntFeed').textContent='';
- const next=document.getElementById('rIntNext'); next.disabled=true;
- const box=document.getElementById('rIntOpts'); box.innerHTML='';
- sh.options.forEach((x,i)=>{
-  const e=document.createElement('div');e.className='choice';e.textContent=x;
-  e.onclick=()=>{if(box.querySelector('.sel'))return;e.classList.add('sel');box.querySelectorAll('.choice').forEach((c,j)=>{if(j===sh.correctIndex)c.classList.add('ok');if(j===i&&i!==sh.correctIndex)c.classList.add('no')});const ok=i===sh.correctIndex;document.getElementById('rIntFeed').className='feedback '+(ok?'good':'bad');document.getElementById('rIntFeed').textContent=(ok?'Correct. ':'Response recorded. ')+(ok?'Your interpretation matches the target answer.':'The target answer is highlighted for research scoring.');next.disabled=false};
-  box.appendChild(e);
- });
- next.onclick=recordInterpret;
-}
-function recordInterpret(){
- const picked=document.querySelector('#rIntOpts .choice.sel'); if(!picked) return;
- const d=interpretationData[research.interpret.i],chosen=picked.textContent,idx=d[3].indexOf(chosen),ok=idx===d[4];
- research.interpret.answers.push({id:d[0],response:chosen,correct:ok});
- if(ok) research.interpret.correct++;
- if(research.interpret.i<interpretationData.length-1){research.interpret.i++;renderInterpret()}else{
-  document.getElementById('rIntFeed').className='feedback good';
-  document.getElementById('rIntFeed').textContent='Interpretation test complete. Open Summary to review this session.';
-  document.getElementById('rIntNext').disabled=true;
- }
- updateResearchSummary();
- saveLocalSession();
-}
-
-function renderExperiment(){
- const d=experimentData[research.experiment.i],p=research.experiment.i/experimentData.length*100;
- document.getElementById('rExpTitle').textContent=d[0]+' — Same message, different format';
- document.getElementById('rExpA').textContent=d[1]; document.getElementById('rExpB').textContent=d[2];
- document.getElementById('rExpQuestion').textContent=d[3];
- document.getElementById('rExpCount').textContent=`${research.experiment.i+1} / ${experimentData.length}`;
- document.getElementById('rExpProgress').style.width=p+'%';
- document.getElementById('rExpFeed').textContent='';
- const next=document.getElementById('rExpNext'); next.disabled=true;
- const box=document.getElementById('rExpOpts'); box.innerHTML='';
- d[4].forEach((x,i)=>{
-  const e=document.createElement('div');e.className='choice';e.textContent=x;
-  e.onclick=()=>{if(box.querySelector('.sel')) return;e.classList.add('sel');box.querySelectorAll('.choice').forEach((c,j)=>{if(j===d[5])c.classList.add('ok');if(j===i&&i!==d[5])c.classList.add('no')});document.getElementById('rExpFeed').className='feedback good';document.getElementById('rExpFeed').textContent='Response selected. Record the participant’s choice exactly.';next.disabled=false};
-  box.appendChild(e);
- });
- next.onclick=recordExperiment;
-}
-function recordExperiment(){
- const picked=document.querySelector('#rExpOpts .choice.sel'); if(!picked) return;
- const d=experimentData[research.experiment.i],chosen=picked.textContent;
- research.experiment.answers.push({id:d[0],response:chosen});
- if(chosen==='Version B') research.experiment.versionB++;
- if(research.experiment.i<experimentData.length-1){research.experiment.i++;renderExperiment()}else{
-  document.getElementById('rExpFeed').className='feedback good';
-  document.getElementById('rExpFeed').textContent='Experiment complete. Open Summary to review this session.';
-  document.getElementById('rExpNext').disabled=true;
- }
- updateResearchSummary();
- saveLocalSession();
-}
-
-function escapeHtml(s){return String(s).replace(/[&<>'"]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[m]});}
-function buildDiary(){
- const box=document.getElementById('diaryRows'); box.innerHTML='';
- for(let i=1;i<=7;i++){
-  const saved=research.diary.find(x=>x.day===i)||{};
-  box.insertAdjacentHTML('beforeend',`<div class="diary-grid" style="margin-bottom:8px"><div><span class="badge">Day ${i}</span></div><input id="dmsg${i}" placeholder="Example: See you 👋" value="${escapeHtml(saved.message||'')}"><input id="dfn${i}" placeholder="farewell" value="${escapeHtml(saved.function||'')}"></div>`);
- }
-}
-function saveDiary(){
- research.diary=[];
- for(let i=1;i<=7;i++){
-  const message=document.getElementById('dmsg'+i).value.trim(), fn=document.getElementById('dfn'+i).value.trim();
-  if(message||fn) research.diary.push({day:i,message:message,function:fn});
- }
- const f=document.getElementById('diaryFeed'); f.className='feedback good'; f.textContent=`Saved ${research.diary.length} diary day(s) in this browser session.`;
- updateResearchSummary();
- saveLocalSession();
-}
-function clearDiary(){research.diary=[];buildDiary();document.getElementById('diaryFeed').textContent='';updateResearchSummary();saveLocalSession();}
-
-function updateResearchSummary(){
- const s=research.survey,it=research.interpret,e=research.experiment;
- document.getElementById('sumSurvey').textContent=`${s.answers.length} / ${surveyData.length}`;
- document.getElementById('sumInt').textContent=`${it.answers.length} / ${interpretationData.length}`;
- document.getElementById('sumExp').textContent=`${e.answers.length} / ${experimentData.length}`;
- document.getElementById('sumDiary').textContent=`${research.diary.length} / 7`;
- document.getElementById('sumSA').textContent=s.stats['Strongly agree']||0;
- document.getElementById('sumA').textContent=s.stats['Agree']||0;
- document.getElementById('sumN').textContent=s.stats['Neutral / unsure']||0;
- document.getElementById('sumD').textContent=s.stats['Disagree']||0;
- document.getElementById('sumSD').textContent=s.stats['Strongly disagree']||0;
- document.getElementById('sumIntCorrect').textContent=it.correct;
- const agree=(s.stats['Agree']||0)+(s.stats['Strongly agree']||0);
- const sp=s.answers.length?Math.round(agree/s.answers.length*100):0, ep=e.answers.length?Math.round(e.versionB/e.answers.length*100):0;
- document.getElementById('sumAgreeBar').style.width=sp+'%'; document.getElementById('sumAgreePct').textContent=sp+'% Agree / Strongly agree';
- document.getElementById('sumExpBar').style.width=ep+'%'; document.getElementById('sumExpPct').textContent=ep+'% Version B';
- document.getElementById('resResearch').textContent=s.answers.length+it.answers.length+e.answers.length;
-}
-function resetAllResearch(){
-  startNewParticipant();
-}
-
-function csvCell(v){const s=String(v??'');return '"'+s.replace(/"/g,'""')+'"';}
-
-function exportAllResearch(){
-  const sessions=exportCurrentAndHistory();
-  if(!sessions.length){
-    alert('No research results have been recorded yet.');
-    return;
-  }
-  const rows=[['Session ID','Started At','Finished At','Module','Item','Message/Prompt','Response','Correct','Score']];
-  sessions.forEach(sess=>{
-    const sid=sess.sessionId||'';
-    const started=sess.startedAt||'';
-    const finished=sess.finishedAt||'';
-    const score=sess.state?.score??0;
-    const r=sess.research||freshResearch();
-
-    (r.survey?.answers||[]).forEach(a=>{
-      const d=surveyData.find(x=>x[0]===a.id);
-      if(d) rows.push([sid,started,finished,'Questionnaire',a.id,d[1]+' | '+d[2],a.response,'',score]);
-    });
-    (r.interpret?.answers||[]).forEach(a=>{
-      const d=interpretationData.find(x=>x[0]===a.id);
-      if(d) rows.push([sid,started,finished,'Interpretation Test',a.id,d?d[1]+' | '+d[2]:'',a.response,a.correct?'Yes':'No',score]);
-    });
-    (r.experiment?.answers||[]).forEach(a=>{
-      const d=experimentData.find(x=>x[0]===a.id);
-      if(d) rows.push([sid,started,finished,'Replacement Experiment',a.id,d[1]+' | '+d[2]+' | '+d[3],a.response,'',score]);
-    });
-    (r.diary||[]).forEach(d=>{
-      rows.push([sid,started,finished,'Seven-Day Diary','Day '+d.day,d.message,d.function,'',score]);
-    });
-    if(!(r.survey?.answers||[]).length && !(r.interpret?.answers||[]).length && !(r.experiment?.answers||[]).length && !(r.diary||[]).length){
-      rows.push([sid,started,finished,'Session Summary','No responses','','','',score]);
-    }
-  });
-  const csv='\ufeff'+rows.map(r=>r.map(csvCell).join(',')).join('\n');
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='emoji_detective_all_results.csv';
-  a.click();
-  setTimeout(()=>URL.revokeObjectURL(a.href),500);
-}
-
-
-loadLocalSession();
-renderSurvey();
-renderInterpret();
-renderExperiment();
-buildDiary();
-updateResearchSummary();
-updateHeader();
-updateSaveStatus();
-
-const cText=document.getElementById('createText'),cEmoji=document.getElementById('createEmoji');
-cText.addEventListener('input',previewCreate);cEmoji.addEventListener('change',previewCreate);
-function previewCreate(){let t=cText.value.trim();document.getElementById('previewMsg').textContent=t?(t+' '+cEmoji.value):'Your message will appear here.'}
-function analyseCreation(){let t=cText.value.trim(),f=document.getElementById('createFeed');if(!t){f.className='feedback bad';f.textContent='Please write a short English message first.';return}let words=t.split(/\s+/).filter(Boolean).length;if(words<3||words>10){f.className='feedback bad';f.textContent='Try a message of 3–10 words so the meaning stays easy to analyse.';return}f.className='feedback good';f.textContent='Good research example. Your message contains '+words+' words and uses '+cEmoji.value+'.';addScore(15,true,'create')}
-function clearCreation(){cText.value='';previewCreate();document.getElementById('createFeed').textContent=''}
-
-function updateResults(){
-  const inv=state.modules.investigate, cmp=state.modules.compare, det=state.modules.detective, crt=state.modules.create;
-  const quizAnswered=inv.answered+cmp.answered+det.answered;
-  const quizCorrect=inv.correct+cmp.correct+det.correct;
-  const quizPoints=inv.points+cmp.points+det.points;
-  const quizMax=80+48+60;
-  const accuracy=quizAnswered?Math.round(quizCorrect/quizAnswered*100):0;
-  document.getElementById('resScore').textContent=state.score;
-  document.getElementById('resCorrect').textContent=quizCorrect+' / '+quizAnswered;
-  document.getElementById('resAccuracy').textContent=accuracy+'%';
-  document.getElementById('resInvCorrect').textContent=inv.correct+' / '+inv.answered;
-  document.getElementById('resCmpCorrect').textContent=cmp.correct+' / '+cmp.answered;
-  document.getElementById('resDetCorrect').textContent=det.correct+' / '+det.answered;
-  document.getElementById('resInvPoints').textContent=inv.points;
-  document.getElementById('resCmpPoints').textContent=cmp.points;
-  document.getElementById('resDetPoints').textContent=det.points;
-  document.getElementById('resCreateDone').textContent=crt.submissions+' submissions';
-  document.getElementById('resCreatePoints').textContent=crt.points;
-  document.getElementById('resScoreLine').textContent=quizPoints+' / '+quizMax+' quiz points + '+crt.points+' Create bonus';
-  document.getElementById('resInvAccuracy').textContent=(inv.answered?Math.round(inv.correct/inv.answered*100):0)+'%';
-  document.getElementById('resCmpAccuracy').textContent=(cmp.answered?Math.round(cmp.correct/cmp.answered*100):0)+'%';
-  document.getElementById('resDetAccuracy').textContent=(det.answered?Math.round(det.correct/det.answered*100):0)+'%';
-  document.getElementById('resResearchCorrect').textContent=research.interpret.correct+' / '+interpretationData.length;
-  document.getElementById('resSurveyCount').textContent=research.survey.answers.length+' / '+surveyData.length;
-  document.getElementById('resInterpretCount').textContent=research.interpret.answers.length+' / '+interpretationData.length;
-  document.getElementById('resExperimentCount').textContent=research.experiment.answers.length+' / '+experimentData.length;
-  document.getElementById('resDiaryCount').textContent=research.diary.length+' / 7';
-  let b=state.score>=150?'Emoji Master':state.score>=90?'Emoji Expert':state.score>=45?'Message Detective':'Starter';
-  document.getElementById('resBadge').textContent=b;
-  document.getElementById('resResearch').textContent=research.survey.answers.length+research.interpret.answers.length+research.experiment.answers.length;
-}
-updateResearchSummary();updateHeader();updateSaveStatus();
-window.addEventListener('beforeunload',saveLocalSession);
 </script>
 </body>
 </html>
