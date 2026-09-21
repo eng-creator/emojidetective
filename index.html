@@ -267,10 +267,44 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
  <div class="card hero">
   <div class="heroemoji">🏆</div><h1>Your Detective Report</h1>
   <p>The score below reflects performance in this interactive prototype. It is not a general measure of English ability.</p>
-  <div class="statgrid"><div class="stat"><b id="resScore">0</b><span>points</span></div><div class="stat"><b id="resCorrect">0</b><span>correct answers</span></div><div class="stat"><b id="resBadge">Starter</b><span>detective level</span></div><div class="stat"><b id="resResearch">0</b><span>research responses</span></div></div>
+  <div class="statgrid">
+   <div class="stat"><b id="resScore">0</b><span>total points</span></div>
+   <div class="stat"><b id="resCorrect">0 / 20</b><span>correct answers</span></div>
+   <div class="stat"><b id="resAccuracy">0%</b><span>accuracy</span></div>
+   <div class="stat"><b id="resBadge">Starter</b><span>detective level</span></div>
+   <div class="stat"><b id="resResearch">0</b><span>research responses</span></div>
+  </div>
+ </div>
+ <div class="card">
+  <span class="badge">Score breakdown</span><h3>Where did your points come from?</h3>
+  <div class="tablewrap"><table class="data-table"><thead><tr><th>Module</th><th>Correct / completed</th><th>Points earned</th><th>Maximum</th></tr></thead>
+   <tbody>
+    <tr><td>🔍 Investigation</td><td id="resInvCorrect">0 / 8</td><td id="resInvPoints">0</td><td>80</td></tr>
+    <tr><td>🔄 Compare</td><td id="resCmpCorrect">0 / 6</td><td id="resCmpPoints">0</td><td>48</td></tr>
+    <tr><td>🕵️ Detective</td><td id="resDetCorrect">0 / 6</td><td id="resDetPoints">0</td><td>60</td></tr>
+    <tr><td>✍️ Create</td><td id="resCreateDone">0 submissions</td><td id="resCreatePoints">0</td><td>—</td></tr>
+   </tbody></table></div>
+  <div class="successbox" style="margin-top:15px"><b id="resScoreLine">0 / 188 quiz points</b><p style="margin:6px 0 0" class="small">Quiz maximum = 188 points from Investigation, Compare and Detective. Create gives separate bonus points.</p></div>
+ </div>
+ <div class="card">
+  <span class="badge">Answer accuracy</span><h3>Your quiz performance</h3>
+  <div class="statgrid">
+   <div class="stat"><b id="resInvAccuracy">0%</b><span>Investigation</span></div>
+   <div class="stat"><b id="resCmpAccuracy">0%</b><span>Compare</span></div>
+   <div class="stat"><b id="resDetAccuracy">0%</b><span>Detective</span></div>
+   <div class="stat"><b id="resResearchCorrect">0 / 15</b><span>Research interpretation</span></div>
+  </div>
+ </div>
+ <div class="card"><h3>Research progress</h3>
+  <div class="statgrid">
+   <div class="stat"><b id="resSurveyCount">0 / 25</b><span>questionnaire</span></div>
+   <div class="stat"><b id="resInterpretCount">0 / 15</b><span>interpretation test</span></div>
+   <div class="stat"><b id="resExperimentCount">0 / 10</b><span>replacement experiment</span></div>
+   <div class="stat"><b id="resDiaryCount">0 / 7</b><span>diary days</span></div>
+  </div>
  </div>
  <div class="card"><h3>What you practised</h3><ul class="list"><li>Identifying common emoji functions in English messages.</li><li>Comparing messages with and without emojis.</li><li>Using context to interpret emotional and social meaning.</li><li>Creating short English messages that use emoji meaningfully.</li></ul></div>
- <div class="card note"><b>For the scientific project:</b> the research findings shown in the project report should come from the real anonymous participant dataset. The product itself can display the final verified statistics after the study is completed.</div>
+ <div class="card note"><b>For the scientific project:</b> research findings in the final report should come from the real anonymous participant dataset. The scores above are individual prototype performance, while research responses are kept separate for analysis.</div>
  <div class="actions"><button class="btn" onclick="go('investigate')">Investigate Again</button><button class="btn secondary" onclick="go('research')">Open Research Mode</button></div>
 </section>
 </main>
@@ -278,10 +312,25 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
 <footer>Emoji Detective V3 • Digital research product prototype for “When Emojis Replace Words: Understanding English Messages”</footer>
 
 <script>
-const CURRENT_KEY='emoji_detective_current_session_v5';
-const HISTORY_KEY='emoji_detective_completed_sessions_v5';
+const CURRENT_KEY='emoji_detective_current_session_v6';
+const HISTORY_KEY='emoji_detective_completed_sessions_v6';
 
-const state={score:0,correct:0,streak:0};
+function freshState(){
+  return {
+    score:0,
+    correct:0,
+    answered:0,
+    streak:0,
+    modules:{
+      investigate:{answered:0,correct:0,points:0},
+      compare:{answered:0,correct:0,points:0},
+      detective:{answered:0,correct:0,points:0},
+      create:{submissions:0,points:0}
+    }
+  };
+}
+
+let state=freshState();
 
 function freshResearch(){
   return {
@@ -310,7 +359,7 @@ function saveLocalSession(){
     sessionId,
     startedAt:sessionStartedAt,
     savedAt:new Date().toISOString(),
-    state:{score:state.score,correct:state.correct,streak:state.streak},
+    state:JSON.parse(JSON.stringify(state)),
     research
   };
   localStorage.setItem(CURRENT_KEY,JSON.stringify(payload));
@@ -324,9 +373,19 @@ function loadLocalSession(){
     if(!raw) return;
     const saved=JSON.parse(raw);
     if(saved?.state){
-      state.score=Number(saved.state.score)||0;
-      state.correct=Number(saved.state.correct)||0;
-      state.streak=Number(saved.state.streak)||0;
+      const restored=freshState();
+      restored.score=Number(saved.state.score)||0;
+      restored.correct=Number(saved.state.correct)||0;
+      restored.answered=Number(saved.state.answered)||0;
+      restored.streak=Number(saved.state.streak)||0;
+      if(saved.state.modules && typeof saved.state.modules==='object'){
+        Object.keys(restored.modules).forEach(k=>{
+          if(saved.state.modules[k] && typeof saved.state.modules[k]==='object'){
+            restored.modules[k]={...restored.modules[k],...saved.state.modules[k]};
+          }
+        });
+      }
+      state=restored;
     }
     if(saved?.research) research=saved.research;
     if(saved?.sessionId) sessionId=saved.sessionId;
@@ -363,7 +422,7 @@ function archiveCurrentSession(){
     sessionId,
     startedAt:sessionStartedAt,
     finishedAt:new Date().toISOString(),
-    state:{score:state.score,correct:state.correct,streak:state.streak},
+    state:JSON.parse(JSON.stringify(state)),
     research:JSON.parse(JSON.stringify(research))
   };
   history.push(payload);
@@ -372,7 +431,7 @@ function archiveCurrentSession(){
 
 function startNewParticipant(){
   archiveCurrentSession();
-  state.score=0; state.correct=0; state.streak=0;
+  state=freshState();
   research=freshResearch();
   sessionId='P-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
   sessionStartedAt=new Date().toISOString();
@@ -388,14 +447,31 @@ function exportCurrentAndHistory(){
   const history=getHistory();
   const current=hasSessionData()?{
     sessionId,startedAt:sessionStartedAt,finishedAt:null,
-    state:{score:state.score,correct:state.correct,streak:state.streak},
+    state:JSON.parse(JSON.stringify(state)),
     research:JSON.parse(JSON.stringify(research))
   }:null;
   return current?[...history,current]:history;
 }
 
 function updateHeader(){document.getElementById('score').textContent=state.score;document.getElementById('streak').textContent=state.streak;updateResults()}
-function addScore(n,ok){if(ok){state.score+=n;state.correct++;state.streak++}else state.streak=0;saveLocalSession();updateHeader()}
+function addScore(n,ok,module){
+  if(module==='create'){
+    state.modules.create.submissions++;
+    state.modules.create.points+=n;
+    state.score+=n;
+    saveLocalSession();
+    updateHeader();
+    return;
+  }
+  const m=state.modules[module];
+  if(!m) return;
+  m.answered++;
+  state.answered++;
+  m.points+=ok?n:0;
+  if(ok){m.correct++;state.score+=n;state.correct++;state.streak++;}else{state.streak=0;}
+  saveLocalSession();
+  updateHeader();
+}
 function go(id){
  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
  document.getElementById(id).classList.add('active');
@@ -435,7 +511,7 @@ function renderInv(){
  document.getElementById('invProgress').style.width=((invI)/invData.length*100)+'%';
  document.getElementById('invArea').innerHTML=`<div class="message">${d.msg}</div><div style="font-weight:800;margin-bottom:12px">${d.q}</div><div class="choicegrid" id="invOpts"></div><div class="feedback" id="invFeed"></div><div class="actions"><button class="btn secondary" id="invNext" disabled>${invI===invData.length-1?'Finish Investigation':'Next'}</button></div>`;
  const box=document.getElementById('invOpts');
- sh.options.forEach((x,i)=>{const el=document.createElement('div');el.className='choice';el.textContent=x;el.onclick=()=>{if(invAnswered)return;invAnswered=true;[...box.children].forEach((c,j)=>{if(j===sh.correctIndex)c.classList.add('ok');if(j===i&&i!==sh.correctIndex)c.classList.add('no')});const ok=i===sh.correctIndex;document.getElementById('invFeed').className='feedback '+(ok?'good':'bad');document.getElementById('invFeed').textContent=(ok?'Correct! ':'Not quite. ')+d.e;addScore(10,ok);document.getElementById('invNext').disabled=false};box.appendChild(el)});
+ sh.options.forEach((x,i)=>{const el=document.createElement('div');el.className='choice';el.textContent=x;el.onclick=()=>{if(invAnswered)return;invAnswered=true;[...box.children].forEach((c,j)=>{if(j===sh.correctIndex)c.classList.add('ok');if(j===i&&i!==sh.correctIndex)c.classList.add('no')});const ok=i===sh.correctIndex;document.getElementById('invFeed').className='feedback '+(ok?'good':'bad');document.getElementById('invFeed').textContent=(ok?'Correct! ':'Not quite. ')+d.e;addScore(10,ok,'investigate');document.getElementById('invNext').disabled=false};box.appendChild(el)});
  document.getElementById('invNext').onclick=()=>{if(invI<invData.length-1){invI++;renderInv()}else{go('results')}};
 }
 
@@ -449,7 +525,7 @@ const cmpData=[
 ];
 let cmpI=0,cmpStarted=false,cmpAnswered=false;
 function startCompare(){cmpStarted=true;cmpI=0;renderCmp()}
-function renderCmp(){cmpAnswered=false;const d=cmpData[cmpI],sh=shuffleChoiceSet(d[3],d[4]);document.getElementById('cmpA').textContent=d[0];document.getElementById('cmpB').textContent=d[1];document.getElementById('cmpQ').textContent=d[2];document.getElementById('cmpCount').textContent=`${cmpI+1} / ${cmpData.length}`;document.getElementById('cmpFeed').textContent='';document.getElementById('cmpNext').disabled=true;const box=document.getElementById('cmpOpts');box.innerHTML='';sh.options.forEach((x,i)=>{let e=document.createElement('div');e.className='choice';e.textContent=x;e.onclick=()=>{if(cmpAnswered)return;cmpAnswered=true;[...box.children].forEach((c,j)=>{if(j===sh.correctIndex)c.classList.add('ok');if(j===i&&i!==sh.correctIndex)c.classList.add('no')});const ok=i===sh.correctIndex;document.getElementById('cmpFeed').className='feedback '+(ok?'good':'bad');document.getElementById('cmpFeed').textContent=(ok?'Correct! ':'Not quite. ')+d[5];addScore(8,ok);document.getElementById('cmpNext').disabled=false};box.appendChild(e)});document.getElementById('cmpNext').onclick=()=>{if(cmpI<cmpData.length-1){cmpI++;renderCmp()}else{go('results')}}}
+function renderCmp(){cmpAnswered=false;const d=cmpData[cmpI],sh=shuffleChoiceSet(d[3],d[4]);document.getElementById('cmpA').textContent=d[0];document.getElementById('cmpB').textContent=d[1];document.getElementById('cmpQ').textContent=d[2];document.getElementById('cmpCount').textContent=`${cmpI+1} / ${cmpData.length}`;document.getElementById('cmpFeed').textContent='';document.getElementById('cmpNext').disabled=true;const box=document.getElementById('cmpOpts');box.innerHTML='';sh.options.forEach((x,i)=>{let e=document.createElement('div');e.className='choice';e.textContent=x;e.onclick=()=>{if(cmpAnswered)return;cmpAnswered=true;[...box.children].forEach((c,j)=>{if(j===sh.correctIndex)c.classList.add('ok');if(j===i&&i!==sh.correctIndex)c.classList.add('no')});const ok=i===sh.correctIndex;document.getElementById('cmpFeed').className='feedback '+(ok?'good':'bad');document.getElementById('cmpFeed').textContent=(ok?'Correct! ':'Not quite. ')+d[5];addScore(8,ok,'compare');document.getElementById('cmpNext').disabled=false};box.appendChild(e)});document.getElementById('cmpNext').onclick=()=>{if(cmpI<cmpData.length-1){cmpI++;renderCmp()}else{go('results')}}}
 
 const detData=[
  ['Context: Your teammate says, “I think we should use option 2.”<br>Reply: “Good idea 👍”',['disagreement','farewell','surprise','approval / agreement'],3,'Here, 👍 reinforces the approval already expressed by “Good idea”.'],
@@ -461,7 +537,7 @@ const detData=[
 ];
 let detI=0,detStarted=false,detAnswered=false;
 function startDetective(){detStarted=true;detI=0;renderDet()}
-function renderDet(){detAnswered=false;const d=detData[detI],sh=shuffleChoiceSet(d[1],d[2]);document.getElementById('detMsg').innerHTML=d[0];document.getElementById('detCount').textContent=`${detI+1} / ${detData.length}`;document.getElementById('detFeed').textContent='';document.getElementById('detNext').disabled=true;const box=document.getElementById('detOpts');box.innerHTML='';sh.options.forEach((x,i)=>{let e=document.createElement('div');e.className='choice';e.textContent=x;e.onclick=()=>{if(detAnswered)return;detAnswered=true;[...box.children].forEach((c,j)=>{if(j===sh.correctIndex)c.classList.add('ok');if(j===i&&i!==sh.correctIndex)c.classList.add('no')});const ok=i===sh.correctIndex;document.getElementById('detFeed').className='feedback '+(ok?'good':'bad');document.getElementById('detFeed').textContent=(ok?'Correct! ':'Not quite. ')+d[3];addScore(10,ok);document.getElementById('detNext').disabled=false};box.appendChild(e)});document.getElementById('detNext').onclick=()=>{if(detI<detData.length-1){detI++;renderDet()}else{go('results')}}}
+function renderDet(){detAnswered=false;const d=detData[detI],sh=shuffleChoiceSet(d[1],d[2]);document.getElementById('detMsg').innerHTML=d[0];document.getElementById('detCount').textContent=`${detI+1} / ${detData.length}`;document.getElementById('detFeed').textContent='';document.getElementById('detNext').disabled=true;const box=document.getElementById('detOpts');box.innerHTML='';sh.options.forEach((x,i)=>{let e=document.createElement('div');e.className='choice';e.textContent=x;e.onclick=()=>{if(detAnswered)return;detAnswered=true;[...box.children].forEach((c,j)=>{if(j===sh.correctIndex)c.classList.add('ok');if(j===i&&i!==sh.correctIndex)c.classList.add('no')});const ok=i===sh.correctIndex;document.getElementById('detFeed').className='feedback '+(ok?'good':'bad');document.getElementById('detFeed').textContent=(ok?'Correct! ':'Not quite. ')+d[3];addScore(10,ok,'detective');document.getElementById('detNext').disabled=false};box.appendChild(e)});document.getElementById('detNext').onclick=()=>{if(detI<detData.length-1){detI++;renderDet()}else{go('results')}}}
 
 // ===== RESEARCH MODE V5 =====
 const surveyData = [
@@ -724,10 +800,40 @@ updateSaveStatus();
 const cText=document.getElementById('createText'),cEmoji=document.getElementById('createEmoji');
 cText.addEventListener('input',previewCreate);cEmoji.addEventListener('change',previewCreate);
 function previewCreate(){let t=cText.value.trim();document.getElementById('previewMsg').textContent=t?(t+' '+cEmoji.value):'Your message will appear here.'}
-function analyseCreation(){let t=cText.value.trim(),f=document.getElementById('createFeed');if(!t){f.className='feedback bad';f.textContent='Please write a short English message first.';return}let words=t.split(/\s+/).filter(Boolean).length;if(words<3||words>10){f.className='feedback bad';f.textContent='Try a message of 3–10 words so the meaning stays easy to analyse.';return}f.className='feedback good';f.textContent='Good research example. Your message contains '+words+' words and uses '+cEmoji.value+'.';addScore(15,true)}
+function analyseCreation(){let t=cText.value.trim(),f=document.getElementById('createFeed');if(!t){f.className='feedback bad';f.textContent='Please write a short English message first.';return}let words=t.split(/\s+/).filter(Boolean).length;if(words<3||words>10){f.className='feedback bad';f.textContent='Try a message of 3–10 words so the meaning stays easy to analyse.';return}f.className='feedback good';f.textContent='Good research example. Your message contains '+words+' words and uses '+cEmoji.value+'.';addScore(15,true,'create')}
 function clearCreation(){cText.value='';previewCreate();document.getElementById('createFeed').textContent=''}
 
-function updateResults(){document.getElementById('resScore').textContent=state.score;document.getElementById('resCorrect').textContent=state.correct;let b=state.score>=150?'Emoji Master':state.score>=90?'Emoji Expert':state.score>=45?'Message Detective':'Starter';document.getElementById('resBadge').textContent=b;document.getElementById('resResearch').textContent=research.survey.answers.length+research.interpret.answers.length+research.experiment.answers.length}
+function updateResults(){
+  const inv=state.modules.investigate, cmp=state.modules.compare, det=state.modules.detective, crt=state.modules.create;
+  const quizAnswered=inv.answered+cmp.answered+det.answered;
+  const quizCorrect=inv.correct+cmp.correct+det.correct;
+  const quizPoints=inv.points+cmp.points+det.points;
+  const quizMax=80+48+60;
+  const accuracy=quizAnswered?Math.round(quizCorrect/quizAnswered*100):0;
+  document.getElementById('resScore').textContent=state.score;
+  document.getElementById('resCorrect').textContent=quizCorrect+' / '+quizAnswered;
+  document.getElementById('resAccuracy').textContent=accuracy+'%';
+  document.getElementById('resInvCorrect').textContent=inv.correct+' / '+inv.answered;
+  document.getElementById('resCmpCorrect').textContent=cmp.correct+' / '+cmp.answered;
+  document.getElementById('resDetCorrect').textContent=det.correct+' / '+det.answered;
+  document.getElementById('resInvPoints').textContent=inv.points;
+  document.getElementById('resCmpPoints').textContent=cmp.points;
+  document.getElementById('resDetPoints').textContent=det.points;
+  document.getElementById('resCreateDone').textContent=crt.submissions+' submissions';
+  document.getElementById('resCreatePoints').textContent=crt.points;
+  document.getElementById('resScoreLine').textContent=quizPoints+' / '+quizMax+' quiz points + '+crt.points+' Create bonus';
+  document.getElementById('resInvAccuracy').textContent=(inv.answered?Math.round(inv.correct/inv.answered*100):0)+'%';
+  document.getElementById('resCmpAccuracy').textContent=(cmp.answered?Math.round(cmp.correct/cmp.answered*100):0)+'%';
+  document.getElementById('resDetAccuracy').textContent=(det.answered?Math.round(det.correct/det.answered*100):0)+'%';
+  document.getElementById('resResearchCorrect').textContent=research.interpret.correct+' / '+interpretationData.length;
+  document.getElementById('resSurveyCount').textContent=research.survey.answers.length+' / '+surveyData.length;
+  document.getElementById('resInterpretCount').textContent=research.interpret.answers.length+' / '+interpretationData.length;
+  document.getElementById('resExperimentCount').textContent=research.experiment.answers.length+' / '+experimentData.length;
+  document.getElementById('resDiaryCount').textContent=research.diary.length+' / 7';
+  let b=state.score>=150?'Emoji Master':state.score>=90?'Emoji Expert':state.score>=45?'Message Detective':'Starter';
+  document.getElementById('resBadge').textContent=b;
+  document.getElementById('resResearch').textContent=research.survey.answers.length+research.interpret.answers.length+research.experiment.answers.length;
+}
 updateResearchSummary();updateHeader();updateSaveStatus();
 window.addEventListener('beforeunload',saveLocalSession);
 </script>
