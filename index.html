@@ -230,13 +230,16 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
   </div>
   <div class="card">
    <h3>Questionnaire distribution</h3>
+   <p class="small">There is no correct answer here. Participants report how strongly they agree or disagree.</p>
    <div class="statgrid">
-    <div class="stat"><b id="sumYes">0</b><span>Yes</span></div>
-    <div class="stat"><b id="sumNo">0</b><span>No</span></div>
-    <div class="stat"><b id="sumUnsure">0</b><span>Not sure</span></div>
+    <div class="stat"><b id="sumSA">0</b><span>Strongly agree</span></div>
+    <div class="stat"><b id="sumA">0</b><span>Agree</span></div>
+    <div class="stat"><b id="sumN">0</b><span>Neutral / unsure</span></div>
+    <div class="stat"><b id="sumD">0</b><span>Disagree</span></div>
+    <div class="stat"><b id="sumSD">0</b><span>Strongly disagree</span></div>
     <div class="stat"><b id="sumIntCorrect">0</b><span>Interpretation correct</span></div>
    </div>
-   <div style="margin-top:18px"><div class="small">Questionnaire “Yes” share</div><div class="bar"><div id="sumYesBar" style="width:0"></div></div><div class="small" id="sumYesPct">0%</div></div>
+   <div style="margin-top:18px"><div class="small">Agreement share (Agree + Strongly agree)</div><div class="bar"><div id="sumAgreeBar" style="width:0"></div></div><div class="small" id="sumAgreePct">0%</div></div>
    <div style="margin-top:18px"><div class="small">Experiment: Version B selected</div><div class="bar"><div id="sumExpBar" style="width:0"></div></div><div class="small" id="sumExpPct">0%</div></div>
   </div>
   <div class="card note"><b>Important:</b> these figures describe the current anonymous browser session only. They are not final scientific findings until real participant data have been collected, checked and aggregated.</div>
@@ -275,14 +278,14 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
 <footer>Emoji Detective V3 • Digital research product prototype for “When Emojis Replace Words: Understanding English Messages”</footer>
 
 <script>
-const CURRENT_KEY='emoji_detective_current_session_v4';
-const HISTORY_KEY='emoji_detective_completed_sessions_v4';
+const CURRENT_KEY='emoji_detective_current_session_v5';
+const HISTORY_KEY='emoji_detective_completed_sessions_v5';
 
 const state={score:0,correct:0,streak:0};
 
 function freshResearch(){
   return {
-    survey:{i:0,answers:[],stats:{Yes:0,No:0,'Not sure':0}},
+    survey:{i:0,answers:[],stats:{'Strongly agree':0,'Agree':0,'Neutral / unsure':0,'Disagree':0,'Strongly disagree':0}},
     interpret:{i:0,answers:[],correct:0},
     experiment:{i:0,answers:[],versionB:0},
     diary:[]
@@ -404,109 +407,121 @@ function go(id){
 }
 document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>go(b.dataset.view));
 
+// Shuffle answer positions so the correct response is not predictably A or B.
+function shuffleChoiceSet(options, correctIndex){
+  const items=options.map((text,index)=>({text,index}));
+  for(let i=items.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [items[i],items[j]]=[items[j],items[i]];
+  }
+  return {options:items.map(x=>x.text),correctIndex:items.findIndex(x=>x.index===correctIndex)};
+}
+
 const invData=[
- {title:'Level 1 — Emoji Meaning',msg:'“Thank you 😊”',q:'What does 😊 most likely add?',o:['friendly / happy tone','anger','farewell','a question'],a:0,e:'😊 often adds a friendly or happy tone.'},
- {title:'Level 1 — Emoji Meaning',msg:'“See you 👋”',q:'What does 👋 most likely signal?',o:['farewell','sadness','agreement','surprise'],a:0,e:'👋 can work as a farewell signal.'},
- {title:'Level 2 — Word or Emoji?',msg:'“Okay 👍”',q:'Can 👍 communicate “I agree” in this short chat?',o:['Yes, often','No, never','Only in a formal report','It means goodbye'],a:0,e:'In informal short messages, 👍 can communicate agreement.'},
- {title:'Level 2 — Word or Emoji?',msg:'“Thanks 😊”',q:'Does 😊 literally mean “thanks”?',o:['No — it mainly adds tone','Yes — always','It means goodbye','It replaces the entire sentence'],a:0,e:'The words carry the basic meaning; 😊 adds emotional tone.'},
- {title:'Level 3 — Function',msg:'“We won! 🎉”',q:'What does 🎉 contribute?',o:['celebration','anger','farewell','confusion'],a:0,e:'🎉 is strongly associated with celebration.'},
- {title:'Level 3 — Function',msg:'“Wow! 😮”',q:'What reaction is signalled?',o:['surprise','gratitude','agreement','sadness'],a:0,e:'😮 commonly signals surprise.'},
- {title:'Level 4 — Context',msg:'“I’m sorry 😔”',q:'In this context, 😔 most likely supports…',o:['sadness / regret','celebration','approval','greeting'],a:0,e:'The words and emoji together suggest sadness or regret.'},
- {title:'Level 4 — Context',msg:'“Great idea 👍”',q:'Here, 👍 most likely means…',o:['approval','farewell','sadness','surprise'],a:0,e:'The context makes approval the most likely interpretation.'}
+ {title:'Level 1 — Read the context',msg:'Friend: “I forgot to bring the poster.”<br>Reply: “It’s okay 🙂”',q:'What role is 🙂 playing most clearly in this exchange?',o:['It replaces the words “it’s okay”','It changes the topic','It softens the reassurance','It shows that the friend forgot'],a:2,e:'The words already express reassurance; 🙂 mainly softens and warms the response.'},
+ {title:'Level 1 — Meaning beyond the emoji',msg:'“You can start without me 👍”',q:'What is the most reasonable interpretation of 👍 here?',o:['The sender is approving the plan','The sender is saying goodbye','The sender is angry','The sender is asking a question'],a:0,e:'In this context, 👍 works as an approval signal rather than a literal replacement for the whole sentence.'},
+ {title:'Level 2 — Context changes meaning',msg:'Teacher: “Please send the file before 5.”<br>Student: “Sure 🙂”',q:'Which description fits the emoji best?',o:['It makes the instruction disappear','It adds a mild, friendly tone','It proves the student is excited','It means “I disagree”'],a:1,e:'The emoji does not change the basic agreement; it can make the reply feel milder or friendlier.'},
+ {title:'Level 2 — Separate words from signal',msg:'“Thanks.” → “Thanks 😊”',q:'Which part of the meaning is most likely to stay the same?',o:['The basic act of thanking','The emotional tone','The level of warmth','The social signal'],a:0,e:'The word “Thanks” still carries the basic communicative act; the emoji mainly changes tone.'},
+ {title:'Level 3 — Social function',msg:'Group chat: “We finished the project! 🎉”',q:'Why is 🎉 useful in this message?',o:['It gives the project a new deadline','It adds a celebration signal','It explains who did the work','It turns the message into a question'],a:1,e:'The words announce completion; 🎉 adds a visible celebration reaction.'},
+ {title:'Level 3 — Infer from wording',msg:'“Really? 😮 I didn’t expect that.”',q:'Which interpretation uses both the words and emoji?',o:['The sender is ending the conversation','The sender is asking for permission','The sender is showing surprise','The sender is congratulating someone'],a:2,e:'“Really?” and “I didn’t expect that” work with 😮 to signal surprise.'},
+ {title:'Level 4 — Relationship matters',msg:'“Thank you ❤️”<br>Context A: close friend<br>Context B: school administrator',q:'What should a careful reader notice first?',o:['❤️ has exactly one meaning in every relationship','The emoji is meaningless without a second emoji','The same emoji may be interpreted differently by different readers','The words “Thank you” no longer matter'],a:2,e:'The relationship and situation can affect how strongly an emoji is interpreted.'},
+ {title:'Level 4 — Best evidence',msg:'Student sees: “Okay 🙂”<br>They are unsure whether the sender is warm, neutral, or slightly distant.',q:'What is the best next step?',o:['Decide from the emoji alone','Assume the sender is angry','Ignore the message completely','Check the surrounding words and situation'],a:3,e:'Emoji interpretation should use the surrounding language and context rather than the emoji alone.'}
 ];
 let invI=0,invStarted=false,invAnswered=false;
 function startInvestigation(){invStarted=true;invI=0;renderInv()}
 function renderInv(){
- const d=invData[invI];invAnswered=false;
+ const d=invData[invI],sh=shuffleChoiceSet(d.o,d.a);invAnswered=false;
  document.getElementById('invTitle').textContent=d.title;document.getElementById('invCounter').textContent=(invI+1)+' / '+invData.length;
  document.getElementById('invProgress').style.width=((invI)/invData.length*100)+'%';
  document.getElementById('invArea').innerHTML=`<div class="message">${d.msg}</div><div style="font-weight:800;margin-bottom:12px">${d.q}</div><div class="choicegrid" id="invOpts"></div><div class="feedback" id="invFeed"></div><div class="actions"><button class="btn secondary" id="invNext" disabled>${invI===invData.length-1?'Finish Investigation':'Next'}</button></div>`;
  const box=document.getElementById('invOpts');
- d.o.forEach((x,i)=>{const el=document.createElement('div');el.className='choice';el.textContent=x;el.onclick=()=>{if(invAnswered)return;invAnswered=true;[...box.children].forEach((c,j)=>{if(j===d.a)c.classList.add('ok');if(j===i&&i!==d.a)c.classList.add('no')});const ok=i===d.a;document.getElementById('invFeed').className='feedback '+(ok?'good':'bad');document.getElementById('invFeed').textContent=(ok?'Correct! ':'Not quite. ')+d.e;addScore(10,ok);document.getElementById('invNext').disabled=false};box.appendChild(el)});
+ sh.options.forEach((x,i)=>{const el=document.createElement('div');el.className='choice';el.textContent=x;el.onclick=()=>{if(invAnswered)return;invAnswered=true;[...box.children].forEach((c,j)=>{if(j===sh.correctIndex)c.classList.add('ok');if(j===i&&i!==sh.correctIndex)c.classList.add('no')});const ok=i===sh.correctIndex;document.getElementById('invFeed').className='feedback '+(ok?'good':'bad');document.getElementById('invFeed').textContent=(ok?'Correct! ':'Not quite. ')+d.e;addScore(10,ok);document.getElementById('invNext').disabled=false};box.appendChild(el)});
  document.getElementById('invNext').onclick=()=>{if(invI<invData.length-1){invI++;renderInv()}else{go('results')}};
 }
 
 const cmpData=[
- ['Thanks.','Thanks 😊','Which version feels warmer?',['Version B','Version A','No difference'],0,'😊 can add a friendlier tone.'],
- ['Okay.','Okay 👍','Which version gives a clearer approval signal?',['Version B','Version A','No difference'],0,'👍 can make agreement more explicit.'],
- ['See you.','See you 👋','Which version gives a clearer farewell signal?',['Version B','Version A','No difference'],0,'👋 works as a farewell signal.'],
- ['Wow!','Wow! 😮','Which version shows surprise more visibly?',['Version B','Version A','No difference'],0,'😮 makes the reaction more explicit.'],
- ['I’m sorry.','I’m sorry 😔','Which version gives a stronger sadness/regret signal?',['Version B','Version A','No difference'],0,'😔 can strengthen the emotional signal.'],
- ['We won!','We won! 🎉','Which version gives a clearer celebration signal?',['Version B','Version A','No difference'],0,'🎉 adds a celebration signal.']
+ ['Thanks.','Thanks 😊','Which version adds a warmer social tone without changing the basic act of thanking?',['Version A','Version B','No difference'],1,'The second version keeps the same words but adds a warmer tone.'],
+ ['Please submit the report.','Please submit the report 🙂','You are writing a formal instruction to an unfamiliar recipient. Which version adds fewer emotional signals?',['Version A','Version B','No difference'],0,'The words-only version is more neutral and carries fewer extra emotional cues.'],
+ ['We completed the task.','We completed the task 🎉','Which version communicates the same factual event?',['Version A','Version B','No difference'],2,'Both sentences state the same event; the emoji changes the tone, not the factual content.'],
+ ['I’m sorry.','I’m sorry 😔','Which version makes regret more visible to the reader?',['Version A','Version B','No difference'],1,'😔 makes the emotional signal easier to notice.'],
+ ['Okay.','Okay 👍','You want the shortest possible approval signal in an informal chat. Which version is more explicit?',['Version A','Version B','No difference'],1,'👍 provides an additional visible approval cue.'],
+ ['We won!','We won! 🎉','Which version is more neutral in tone?',['Version A','Version B','No difference'],0,'The words-only version states the result without adding a celebration emoji.']
 ];
 let cmpI=0,cmpStarted=false,cmpAnswered=false;
 function startCompare(){cmpStarted=true;cmpI=0;renderCmp()}
-function renderCmp(){cmpAnswered=false;const d=cmpData[cmpI];document.getElementById('cmpA').textContent=d[0];document.getElementById('cmpB').textContent=d[1];document.getElementById('cmpQ').textContent=d[2];document.getElementById('cmpCount').textContent=`${cmpI+1} / ${cmpData.length}`;document.getElementById('cmpFeed').textContent='';document.getElementById('cmpNext').disabled=true;const box=document.getElementById('cmpOpts');box.innerHTML='';d[3].forEach((x,i)=>{let e=document.createElement('div');e.className='choice';e.textContent=x;e.onclick=()=>{if(cmpAnswered)return;cmpAnswered=true;[...box.children].forEach((c,j)=>{if(j===d[4])c.classList.add('ok');if(j===i&&i!==d[4])c.classList.add('no')});const ok=i===d[4];document.getElementById('cmpFeed').className='feedback '+(ok?'good':'bad');document.getElementById('cmpFeed').textContent=(ok?'Correct! ':'Not quite. ')+d[5];addScore(8,ok);document.getElementById('cmpNext').disabled=false};box.appendChild(e)});document.getElementById('cmpNext').onclick=()=>{if(cmpI<cmpData.length-1){cmpI++;renderCmp()}else{go('results')}}}
+function renderCmp(){cmpAnswered=false;const d=cmpData[cmpI],sh=shuffleChoiceSet(d[3],d[4]);document.getElementById('cmpA').textContent=d[0];document.getElementById('cmpB').textContent=d[1];document.getElementById('cmpQ').textContent=d[2];document.getElementById('cmpCount').textContent=`${cmpI+1} / ${cmpData.length}`;document.getElementById('cmpFeed').textContent='';document.getElementById('cmpNext').disabled=true;const box=document.getElementById('cmpOpts');box.innerHTML='';sh.options.forEach((x,i)=>{let e=document.createElement('div');e.className='choice';e.textContent=x;e.onclick=()=>{if(cmpAnswered)return;cmpAnswered=true;[...box.children].forEach((c,j)=>{if(j===sh.correctIndex)c.classList.add('ok');if(j===i&&i!==sh.correctIndex)c.classList.add('no')});const ok=i===sh.correctIndex;document.getElementById('cmpFeed').className='feedback '+(ok?'good':'bad');document.getElementById('cmpFeed').textContent=(ok?'Correct! ':'Not quite. ')+d[5];addScore(8,ok);document.getElementById('cmpNext').disabled=false};box.appendChild(e)});document.getElementById('cmpNext').onclick=()=>{if(cmpI<cmpData.length-1){cmpI++;renderCmp()}else{go('results')}}}
 
 const detData=[
- ['“Okay 👍”',['agreement / approval','sadness','farewell','surprise'],0,'The words “Okay” plus 👍 strongly suggest approval.'],
- ['“See you 👋”',['farewell','anger','celebration','sadness'],0,'👋 supports the farewell context.'],
- ['“Wow! 😮”',['surprise','gratitude','agreement','sadness'],0,'“Wow!” creates a clear surprise context.'],
- ['“Thank you 😊”',['friendly / happy tone','anger','farewell','confusion'],0,'😊 usually makes the thanks feel warmer.'],
- ['“I’m sorry 😔”',['sadness / regret','celebration','approval','greeting'],0,'The words and 😔 work together to show regret or sadness.'],
- ['“We won! 🎉”',['celebration','farewell','apology','disagreement'],0,'Winning plus 🎉 creates a celebration context.']
+ ['Context: Your teammate says, “I think we should use option 2.”<br>Reply: “Good idea 👍”',['disagreement','farewell','surprise','approval / agreement'],3,'Here, 👍 reinforces the approval already expressed by “Good idea”.'],
+ ['Context: A teacher says, “Please check your answer again.”<br>Student: “Okay 🙂”',['anger','mild / cooperative tone','celebration','farewell'],1,'The words show compliance; 🙂 can make the reply feel milder or more friendly.'],
+ ['Context: Friend: “I passed the exam!”<br>Reply: “No way! 😮”',['sadness','agreement','surprise','apology'],2,'“No way!” plus 😮 gives a strong surprise reaction.'],
+ ['Context: You forgot to reply yesterday.<br>Message: “Sorry for the late reply 😔”',['regret / apology','celebration','approval','greeting'],0,'The wording and 😔 work together to communicate regret.'],
+ ['Context: Class group: “Our team finished first! 🎉”<br>Question: What is the main social function of 🎉?',['farewell','confusion','warning','celebration'],3,'The emoji signals celebration in the context of finishing first.'],
+ ['Context: You ask, “Can you send me the notes?”<br>Reply: “Sure 👍”',['sadness','agreement / willingness','surprise','farewell'],1,'“Sure” shows willingness and 👍 reinforces that approval.']
 ];
 let detI=0,detStarted=false,detAnswered=false;
 function startDetective(){detStarted=true;detI=0;renderDet()}
-function renderDet(){detAnswered=false;const d=detData[detI];document.getElementById('detMsg').textContent=d[0];document.getElementById('detCount').textContent=`${detI+1} / ${detData.length}`;document.getElementById('detFeed').textContent='';document.getElementById('detNext').disabled=true;const box=document.getElementById('detOpts');box.innerHTML='';d[1].forEach((x,i)=>{let e=document.createElement('div');e.className='choice';e.textContent=x;e.onclick=()=>{if(detAnswered)return;detAnswered=true;[...box.children].forEach((c,j)=>{if(j===d[2])c.classList.add('ok');if(j===i&&i!==d[2])c.classList.add('no')});const ok=i===d[2];document.getElementById('detFeed').className='feedback '+(ok?'good':'bad');document.getElementById('detFeed').textContent=(ok?'Correct! ':'Not quite. ')+d[3];addScore(10,ok);document.getElementById('detNext').disabled=false};box.appendChild(e)});document.getElementById('detNext').onclick=()=>{if(detI<detData.length-1){detI++;renderDet()}else{go('results')}}}
+function renderDet(){detAnswered=false;const d=detData[detI],sh=shuffleChoiceSet(d[1],d[2]);document.getElementById('detMsg').innerHTML=d[0];document.getElementById('detCount').textContent=`${detI+1} / ${detData.length}`;document.getElementById('detFeed').textContent='';document.getElementById('detNext').disabled=true;const box=document.getElementById('detOpts');box.innerHTML='';sh.options.forEach((x,i)=>{let e=document.createElement('div');e.className='choice';e.textContent=x;e.onclick=()=>{if(detAnswered)return;detAnswered=true;[...box.children].forEach((c,j)=>{if(j===sh.correctIndex)c.classList.add('ok');if(j===i&&i!==sh.correctIndex)c.classList.add('no')});const ok=i===sh.correctIndex;document.getElementById('detFeed').className='feedback '+(ok?'good':'bad');document.getElementById('detFeed').textContent=(ok?'Correct! ':'Not quite. ')+d[3];addScore(10,ok);document.getElementById('detNext').disabled=false};box.appendChild(e)});document.getElementById('detNext').onclick=()=>{if(detI<detData.length-1){detI++;renderDet()}else{go('results')}}}
 
-// ===== RESEARCH MODE V3 =====
+// ===== RESEARCH MODE V5 =====
 const surveyData = [
- ['A1','“Thanks 😊”','Does adding 😊 make the message feel warmer?',['Yes','No','Not sure']],
- ['A2','“Okay 👍”','Can 👍 communicate agreement in a short chat?',['Yes','No','Not sure']],
- ['A3','“See you 👋”','Can 👋 work as a farewell signal?',['Yes','No','Not sure']],
- ['A4','“Wow! 😮”','Does 😮 make the surprise reaction more visible?',['Yes','No','Not sure']],
- ['A5','“We won! 🎉”','Does 🎉 reinforce the celebration meaning?',['Yes','No','Not sure']],
- ['B1','“I’m sorry 😔”','Does 😔 add an emotional signal of sadness or regret?',['Yes','No','Not sure']],
- ['B2','“Great idea 👍”','Does 👍 help communicate approval?',['Yes','No','Not sure']],
- ['B3','“Thank you ❤️”','Could ❤️ have a different meaning in different relationships?',['Yes','No','Not sure']],
- ['B4','“Okay 🙂”','Could different readers interpret 🙂 differently?',['Yes','No','Not sure']],
- ['B5','“Good luck 🍀”','Can the emoji add a supportive meaning to the words?',['Yes','No','Not sure']],
- ['B6','“I’m ready 💪”','Can 💪 strengthen a message of determination?',['Yes','No','Not sure']],
- ['B7','“Really? 😳”','Can 😳 show a strong emotional reaction?',['Yes','No','Not sure']],
- ['C1','“Thank you.” / “Thank you 😊”','Does the second version communicate a different tone?',['Yes','No','Not sure']],
- ['C2','“See you.” / “See you 👋”','Does adding an emoji change the communicative signal?',['Yes','No','Not sure']],
- ['C3','“Okay.” / “Okay 👍”','Does adding 👍 make approval clearer?',['Yes','No','Not sure']],
- ['C4','“Great!” / “Great! 🎉”','Does adding 🎉 strengthen celebration?',['Yes','No','Not sure']],
- ['C5','“Wow!” / “Wow! 😮”','Does adding 😮 make the reaction more visible?',['Yes','No','Not sure']],
- ['C6','“Sorry.” / “Sorry 😔”','Does adding 😔 strengthen the emotional tone?',['Yes','No','Not sure']],
- ['C7','“Nice!” / “Nice! 👍”','Can 👍 add an approval signal?',['Yes','No','Not sure']],
- ['D1','“Sure 🙂”','Could 🙂 make the tone sound milder?',['Yes','No','Not sure']],
- ['D2','“No problem 😊”','Can 😊 make the phrase sound friendlier?',['Yes','No','Not sure']],
- ['D3','“Let’s go! 🚀”','Can 🚀 signal energy or excitement?',['Yes','No','Not sure']],
- ['D4','“Oops! 😅”','Can 😅 communicate an embarrassed or light reaction?',['Yes','No','Not sure']],
- ['D5','“Good night 🌙”','Can 🌙 support the meaning of the message?',['Yes','No','Not sure']]
+ ['S1','“Thanks 😊”','Adding an emoji can change the tone of a message without changing its basic words.'],
+ ['S2','“Okay 👍”','An emoji can sometimes make a short reply easier to interpret.'],
+ ['S3','“See you 👋”','Emoji meaning depends partly on the words around it.'],
+ ['S4','“Wow! 😮”','People may notice an emotional reaction faster when an emoji is included.'],
+ ['S5','“Great job 🎉”','The same emoji can be interpreted somewhat differently in different situations.'],
+ ['S6','“Sorry 😔”','Emoji can help make an intended tone more visible in a short English message.'],
+ ['S7','“Thank you ❤️”','The relationship between the people can affect how an emoji is understood.'],
+ ['S8','“Sure 🙂”','A smile emoji can make a short reply sound milder.'],
+ ['S9','“Good luck 🍀”','An emoji can add a social meaning that is not stated by the words alone.'],
+ ['S10','“I’m ready 💪”','Some emojis can strengthen a message of confidence or determination.'],
+ ['S11','“Really? 😳”','Emoji can sometimes make a reaction look stronger than the words alone.'],
+ ['S12','“No problem 😊”','An emoji can influence how friendly a message feels.'],
+ ['S13','“Good night 🌙”','An emoji can support the topic of a message without replacing the words.'],
+ ['S14','“Oops! 😅”','Readers can disagree about the exact tone of the same emoji message.'],
+ ['S15','“Fine 🙂”','A message with an emoji can still remain ambiguous.'],
+ ['S16','“Send it 👍”','Context is important when deciding what an emoji is doing in a sentence.'],
+ ['S17','“You did it! 🎉”','An emoji can reinforce meaning that the words already suggest.'],
+ ['S18','“Thanks.” / “Thanks 😊”','Comparing a message with and without an emoji can help study changes in perceived tone.'],
+ ['S19','“Okay.” / “Okay 👍”','Adding an emoji always makes a message easier to understand.'],
+ ['S20','“Sorry.” / “Sorry 😔”','Emoji are sometimes more useful for showing emotion than for adding new factual information.'],
+ ['S21','“Sure.” / “Sure 🙂”','The same words can create a different impression when the emoji changes.'],
+ ['S22','“We won!” / “We won! 🎉”','Emoji can influence how enthusiastic a message appears.'],
+ ['S23','“Thank you ❤️”','Emoji have one fixed meaning that does not depend on context.'],
+ ['S24','“Okay 🙂”','Two readers can understand the same emoji message in slightly different ways.'],
+ ['S25','“Let’s go! 🚀”','Studying emoji in real message contexts can help explain how people communicate feelings in text.']
 ];
+const surveyOptions=['Strongly agree','Agree','Neutral / unsure','Disagree','Strongly disagree'];
 
 const interpretationData = [
- ['I1','“Okay 🙂”','What does the message most likely communicate?',['mild / calm tone','celebration','farewell','anger'],0],
- ['I2','“Great idea 👍”','What does 👍 most likely communicate here?',['approval','sadness','surprise','farewell'],0],
- ['I3','“See you 👋”','What is the clearest social function?',['farewell','apology','agreement','celebration'],0],
- ['I4','“Wow! 😮”','What reaction is most likely signalled?',['surprise','gratitude','sadness','agreement'],0],
- ['I5','“We won! 🎉”','What does 🎉 contribute?',['celebration','anger','confusion','farewell'],0],
- ['I6','“I’m sorry 😔”','What emotional meaning is supported?',['sadness / regret','approval','celebration','greeting'],0],
- ['I7','“Thank you 😊”','How does 😊 most likely affect the tone?',['warmer / friendlier','more formal','angrier','unclear farewell'],0],
- ['I8','“Good luck 🍀”','What extra meaning can 🍀 suggest?',['luck / encouragement','anger','farewell','surprise'],0],
- ['I9','“I’m ready 💪”','What does 💪 most likely add?',['determination / confidence','sadness','greeting','apology'],0],
- ['I10','“Really? 😳”','What reaction is most likely?',['strong surprise / embarrassment','celebration','farewell','agreement'],0],
- ['I11','“No problem 😊”','What tone is most likely?',['friendly / reassuring','angry','sad','formal warning'],0],
- ['I12','“Oops! 😅”','What does 😅 most likely communicate?',['embarrassed / light reaction','celebration','agreement','farewell'],0],
- ['I13','“Let’s go! 🚀”','What feeling does 🚀 most likely add?',['energy / excitement','sadness','regret','apology'],0],
- ['I14','“Good night 🌙”','What is the emoji mainly doing?',['supporting the message context','replacing the whole sentence','showing anger','showing surprise'],0],
- ['I15','“Thank you ❤️”','Why might context matter here?',['The relationship can affect interpretation','❤️ always means goodbye','It has one fixed meaning','The words become meaningless'],0]
+ ['I1','Friend: “I can’t join today.”<br>Reply: “No problem 😊”','What does 😊 most likely add?',['A stronger refusal','A friendlier / reassuring tone','A farewell signal','A new piece of factual information'],1],
+ ['I2','“I guess that works 🙂”','What is the best description of the tone?',['Strong excitement','Formal warning','Mild / somewhat positive tone','Celebration'],2],
+ ['I3','“You remembered my birthday! 🎉”','What is the emoji doing most clearly?',['Signalling celebration','Showing disagreement','Ending the conversation','Replacing the factual message'],0],
+ ['I4','“Really? 😳 I didn’t see that coming.”','Which interpretation fits the whole message best?',['Calm agreement','Farewell','Gratitude','Strong surprise / embarrassment'],3],
+ ['I5','“Could you send it again? 🙏”','Which reading is most supported by the words plus emoji?',['A request with a polite / pleading signal','An announcement of success','A farewell','A joke with no request'],0],
+ ['I6','“Great idea 👍 Let’s do that.”','What social function is most likely?',['Apology','Approval / agreement','Surprise','Sadness'],1],
+ ['I7','“Thanks ❤️”','Why should a careful reader consider context here?',['The emoji can never show emotion','The words are meaningless without emoji','The relationship can affect how strong the signal feels','❤️ always means romantic love'],2],
+ ['I8','Teacher: “Please revise question 4.”<br>Student: “Sure 🙂”','What does the emoji most likely change?',['The requested task','The factual content','The deadline','The tone of the reply'],3],
+ ['I9','“See you tomorrow 👋”','Which function is clearest?',['Farewell','Anger','Celebration','Confusion'],0],
+ ['I10','“I’m ready 💪”','What does 💪 most likely contribute?',['Sadness','Determination / confidence','Greeting','Apology'],1],
+ ['I11','“Oops! 😅 I sent the wrong file.”','What is the best interpretation of 😅?',['A light embarrassed reaction','A celebration signal','A farewell','Strong anger'],0],
+ ['I12','“Fine 🙂” after being asked to wait','Why might this message still be ambiguous?',['🙂 has exactly one universal meaning','The words are too long','The reader may need more context to judge the tone','The emoji changes the factual event'],2],
+ ['I13','“We won! 🎉”','What is NOT added by the emoji?',['A celebration signal','Positive emotional emphasis','The fact that the team won','A visible reaction'],2],
+ ['I14','“Good luck 🍀 on your test!”','What does 🍀 most likely contribute?',['A luck / encouragement signal','A complaint','A farewell','A factual score'],0],
+ ['I15','“Thanks.” / “Thanks 😊”','What is the most defensible conclusion?',['The emoji changes the factual event','The emoji can change perceived tone while the basic thanks remains','The two messages always mean opposite things','The words have no meaning without emoji'],1]
 ];
 
 const experimentData = [
- ['E1','Thanks.','Thanks 😊','Which version feels warmer?',['Version B','Version A','No difference'],0],
- ['E2','Okay.','Okay 👍','Which version gives the clearer approval signal?',['Version B','Version A','No difference'],0],
- ['E3','See you.','See you 👋','Which version gives the clearer farewell signal?',['Version B','Version A','No difference'],0],
- ['E4','Wow!','Wow! 😮','Which version shows surprise more visibly?',['Version B','Version A','No difference'],0],
- ['E5','I’m sorry.','I’m sorry 😔','Which version gives a stronger sadness/regret signal?',['Version B','Version A','No difference'],0],
- ['E6','We won!','We won! 🎉','Which version gives the clearer celebration signal?',['Version B','Version A','No difference'],0],
- ['E7','Great idea.','Great idea 👍','Which version makes approval more explicit?',['Version B','Version A','No difference'],0],
- ['E8','Good luck.','Good luck 🍀','Which version adds a supportive signal?',['Version B','Version A','No difference'],0],
- ['E9','I’m ready.','I’m ready 💪','Which version gives a stronger determination signal?',['Version B','Version A','No difference'],0],
- ['E10','Oops!','Oops! 😅','Which version gives the stronger emotional reaction signal?',['Version B','Version A','No difference'],0]
+ ['E1','Thanks.','Thanks 😊','Which version adds a warmer tone?',['Version A','Version B','No difference'],1],
+ ['E2','Please submit the report.','Please submit the report 🙂','Which version is more neutral for a formal instruction?',['Version A','Version B','No difference'],0],
+ ['E3','We completed the task.','We completed the task 🎉','Which version keeps the same factual information?',['Version A','Version B','No difference'],2],
+ ['E4','I’m sorry.','I’m sorry 😔','Which version makes regret more visible?',['Version A','Version B','No difference'],1],
+ ['E5','Okay.','Okay 👍','Which version gives a clearer approval signal in an informal chat?',['Version A','Version B','No difference'],1],
+ ['E6','We won!','We won! 🎉','Which version is more neutral in tone?',['Version A','Version B','No difference'],0],
+ ['E7','Good luck.','Good luck 🍀','Which version adds a visible supportive signal?',['Version A','Version B','No difference'],1],
+ ['E8','I’m ready.','I’m ready 💪','Which version keeps the same basic statement while adding emotional emphasis?',['Version A','Version B','No difference'],2],
+ ['E9','See you.','See you 👋','Which version gives the clearest farewell cue?',['Version A','Version B','No difference'],1],
+ ['E10','Thanks.','Thanks 😊','Which version is less emotionally marked?',['Version A','Version B','No difference'],0]
 ];
 
 function wireResearchTabs(){
@@ -531,17 +546,14 @@ function renderSurvey(){
  const feed=document.getElementById('rSurveyFeed'); feed.textContent='';
  const next=document.getElementById('rSurveyNext'); next.disabled=true;
  const box=document.getElementById('rSurveyOpts'); box.innerHTML='';
- d[3].forEach(x=>{
-  const e=document.createElement('div'); e.className='choice'; e.textContent=x;
-  e.onclick=()=>{box.querySelectorAll('.choice').forEach(c=>c.classList.remove('sel'));e.classList.add('sel');feed.className='feedback good';feed.textContent='Response selected. Click “Record & Next” to save it.';next.disabled=false};
-  box.appendChild(e);
- });
+ surveyOptions.forEach(x=>{const e=document.createElement('div');e.className='choice';e.textContent=x;e.onclick=()=>{box.querySelectorAll('.choice').forEach(c=>c.classList.remove('sel'));e.classList.add('sel');feed.className='feedback good';feed.textContent='Response selected. Click “Record & Next” to save it.';next.disabled=false};box.appendChild(e)});
  next.onclick=recordSurvey;
 }
 function recordSurvey(){
  const picked=document.querySelector('#rSurveyOpts .choice.sel'); if(!picked) return;
  const d=surveyData[research.survey.i], chosen=picked.textContent;
  research.survey.answers.push({id:d[0],response:chosen});
+ if(!(chosen in research.survey.stats)) research.survey.stats[chosen]=0;
  research.survey.stats[chosen]++;
  if(research.survey.i<surveyData.length-1){research.survey.i++;renderSurvey()}else{
   document.getElementById('rSurveyFeed').className='feedback good';
@@ -553,17 +565,17 @@ function recordSurvey(){
 }
 
 function renderInterpret(){
- const d=interpretationData[research.interpret.i],p=research.interpret.i/interpretationData.length*100;
- document.getElementById('rIntMsg').textContent=d[1];
+ const d=interpretationData[research.interpret.i],sh=shuffleChoiceSet(d[3],d[4]),p=research.interpret.i/interpretationData.length*100;
+ document.getElementById('rIntMsg').innerHTML=d[1];
  document.getElementById('rIntQuestion').textContent=d[2];
  document.getElementById('rIntCount').textContent=`${research.interpret.i+1} / ${interpretationData.length}`;
  document.getElementById('rIntProgress').style.width=p+'%';
  document.getElementById('rIntFeed').textContent='';
  const next=document.getElementById('rIntNext'); next.disabled=true;
  const box=document.getElementById('rIntOpts'); box.innerHTML='';
- d[3].forEach((x,i)=>{
-  const e=document.createElement('div'); e.className='choice'; e.textContent=x;
-  e.onclick=()=>{if(box.querySelector('.sel')) return;e.classList.add('sel');box.querySelectorAll('.choice').forEach((c,j)=>{if(j===d[4])c.classList.add('ok');if(j===i&&i!==d[4])c.classList.add('no')});const ok=i===d[4];document.getElementById('rIntFeed').className='feedback '+(ok?'good':'bad');document.getElementById('rIntFeed').textContent=(ok?'Correct. ':'Response recorded. ')+(ok?'Your interpretation matches the target answer.':'The target answer is highlighted for research scoring.');next.disabled=false};
+ sh.options.forEach((x,i)=>{
+  const e=document.createElement('div');e.className='choice';e.textContent=x;
+  e.onclick=()=>{if(box.querySelector('.sel'))return;e.classList.add('sel');box.querySelectorAll('.choice').forEach((c,j)=>{if(j===sh.correctIndex)c.classList.add('ok');if(j===i&&i!==sh.correctIndex)c.classList.add('no')});const ok=i===sh.correctIndex;document.getElementById('rIntFeed').className='feedback '+(ok?'good':'bad');document.getElementById('rIntFeed').textContent=(ok?'Correct. ':'Response recorded. ')+(ok?'Your interpretation matches the target answer.':'The target answer is highlighted for research scoring.');next.disabled=false};
   box.appendChild(e);
  });
  next.onclick=recordInterpret;
@@ -639,12 +651,15 @@ function updateResearchSummary(){
  document.getElementById('sumInt').textContent=`${it.answers.length} / ${interpretationData.length}`;
  document.getElementById('sumExp').textContent=`${e.answers.length} / ${experimentData.length}`;
  document.getElementById('sumDiary').textContent=`${research.diary.length} / 7`;
- document.getElementById('sumYes').textContent=s.stats.Yes;
- document.getElementById('sumNo').textContent=s.stats.No;
- document.getElementById('sumUnsure').textContent=s.stats['Not sure'];
+ document.getElementById('sumSA').textContent=s.stats['Strongly agree']||0;
+ document.getElementById('sumA').textContent=s.stats['Agree']||0;
+ document.getElementById('sumN').textContent=s.stats['Neutral / unsure']||0;
+ document.getElementById('sumD').textContent=s.stats['Disagree']||0;
+ document.getElementById('sumSD').textContent=s.stats['Strongly disagree']||0;
  document.getElementById('sumIntCorrect').textContent=it.correct;
- const sp=s.answers.length?Math.round(s.stats.Yes/s.answers.length*100):0, ep=e.answers.length?Math.round(e.versionB/e.answers.length*100):0;
- document.getElementById('sumYesBar').style.width=sp+'%'; document.getElementById('sumYesPct').textContent=sp+'% Yes';
+ const agree=(s.stats['Agree']||0)+(s.stats['Strongly agree']||0);
+ const sp=s.answers.length?Math.round(agree/s.answers.length*100):0, ep=e.answers.length?Math.round(e.versionB/e.answers.length*100):0;
+ document.getElementById('sumAgreeBar').style.width=sp+'%'; document.getElementById('sumAgreePct').textContent=sp+'% Agree / Strongly agree';
  document.getElementById('sumExpBar').style.width=ep+'%'; document.getElementById('sumExpPct').textContent=ep+'% Version B';
  document.getElementById('resResearch').textContent=s.answers.length+it.answers.length+e.answers.length;
 }
